@@ -1,0 +1,134 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="CssConvertColorToHexInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CssMissingSemicolonInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CssOptimizeSimilarPropertiesInspection" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CssOverwrittenProperties" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="CssUnitlessNumber" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCustomPropertiesEnabled" value="true" />
+      <option name="myIgnoreVendorSpecificProperties" value="true" />
+      <option name="myCustomPropertiesList">
+        <value>
+          <list size="4">
+            <item index="0" class="java.lang.String" itemvalue="transition" />
+            <item index="1" class="java.lang.String" itemvalue="transform" />
+            <item index="2" class="java.lang.String" itemvalue="animation" />
+            <item index="3" class="java.lang.String" itemvalue="transition-delay" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="CyclomaticComplexityJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="10" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="6">
+            <item index="0" class="java.lang.String" itemvalue="allowtransparency" />
+            <item index="1" class="java.lang.String" itemvalue="frameborder" />
+            <item index="2" class="java.lang.String" itemvalue="scrolling" />
+            <item index="3" class="java.lang.String" itemvalue="cellpadding" />
+            <item index="4" class="java.lang.String" itemvalue="cellspacing" />
+            <item index="5" class="java.lang.String" itemvalue="align" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="details" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTarget" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSHint" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="JSJQueryEfficiency" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSLintValidation" enabled="false" level="ERROR" enabled_by_default="false">
+      <option name="assumeConsole" value="true" />
+      <option name="assumeBrowser" value="true" />
+      <option name="tolerateAnyCharInRegExp" value="true" />
+      <option name="tolerateMissingUseStrict" value="true" />
+      <option name="tolerateCSSWorkarounds" value="true" />
+      <option name="assumeJQuery" value="true" />
+    </inspection_tool>
+    <inspection_tool class="JSSuspiciousNameCombination" enabled="false" level="WARNING" enabled_by_default="false">
+      <group names="x,width,left,right" />
+      <group names="y,height,top,bottom" />
+      <exclude classes="Math" />
+    </inspection_tool>
+    <inspection_tool class="JSUnresolvedFunction" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="NestingDepthJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="5" />
+    </inspection_tool>
+    <inspection_tool class="ParametersPerFunctionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="5" />
+    </inspection_tool>
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="31">
+            <item index="0" class="java.lang.String" itemvalue="pyzmq" />
+            <item index="1" class="java.lang.String" itemvalue="django-ztask" />
+            <item index="2" class="java.lang.String" itemvalue="django" />
+            <item index="3" class="java.lang.String" itemvalue="progressbar" />
+            <item index="4" class="java.lang.String" itemvalue="boto" />
+            <item index="5" class="java.lang.String" itemvalue="sorl-thumbnail" />
+            <item index="6" class="java.lang.String" itemvalue="Werkzeug" />
+            <item index="7" class="java.lang.String" itemvalue="raven" />
+            <item index="8" class="java.lang.String" itemvalue="django-reversion" />
+            <item index="9" class="java.lang.String" itemvalue="django-celery" />
+            <item index="10" class="java.lang.String" itemvalue="south" />
+            <item index="11" class="java.lang.String" itemvalue="django_extensions" />
+            <item index="12" class="java.lang.String" itemvalue="django-kombu" />
+            <item index="13" class="java.lang.String" itemvalue="django-mptt" />
+            <item index="14" class="java.lang.String" itemvalue="django-blog-zinnia" />
+            <item index="15" class="java.lang.String" itemvalue="django-paypal" />
+            <item index="16" class="java.lang.String" itemvalue="Pygments" />
+            <item index="17" class="java.lang.String" itemvalue="pygeoip" />
+            <item index="18" class="java.lang.String" itemvalue="html5lib" />
+            <item index="19" class="java.lang.String" itemvalue="django-waffle" />
+            <item index="20" class="java.lang.String" itemvalue="oauth2" />
+            <item index="21" class="java.lang.String" itemvalue="tweepy" />
+            <item index="22" class="java.lang.String" itemvalue="PyYAML" />
+            <item index="23" class="java.lang.String" itemvalue="django-eav" />
+            <item index="24" class="java.lang.String" itemvalue="jsonfield" />
+            <item index="25" class="java.lang.String" itemvalue="python_memcached" />
+            <item index="26" class="java.lang.String" itemvalue="BeautifulSoup" />
+            <item index="27" class="java.lang.String" itemvalue="django-jsonfield" />
+            <item index="28" class="java.lang.String" itemvalue="django-storages" />
+            <item index="29" class="java.lang.String" itemvalue="gunicorn" />
+            <item index="30" class="java.lang.String" itemvalue="Flask" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnusedLocalInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreTupleUnpacking" value="true" />
+      <option name="ignoreLambdaParameters" value="true" />
+      <option name="ignoreLoopIterationVariables" value="true" />
+    </inspection_tool>
+    <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+      <option name="processCode" value="true" />
+      <option name="processLiterals" value="true" />
+      <option name="processComments" value="true" />
+    </inspection_tool>
+    <inspection_tool class="StatementsPerFunctionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="30" />
+    </inspection_tool>
+  </profile>
+</component>
