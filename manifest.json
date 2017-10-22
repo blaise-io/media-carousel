@@ -2,5 +2,5 @@
   "manifest_version": 2,
   "name": "Media Carousel",
   "version": "0.1.0",
-  "description": ""
+  "description": "Collects all embedded and linked media of the current page and displays this content in a carousel."
 }
