@@ -25,12 +25,12 @@
 
     // Add to document and focus the frame.
     document.documentElement.appendChild(frame);
-    frame.dispatchEvent(new Event('focus'));
 
     // Send the current document to the frame to extract media.
     frame.addEventListener('load', () => {
         let element = document.body ? document.body : document.documentElement;
         frame.contentWindow.postMessage(element.innerHTML, '*');
+        frame.contentWindow.focus();
     });
 
     // TODO: Prevent scrolling the parent frame while carousel is visible.

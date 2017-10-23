@@ -1,14 +1,13 @@
 // TODO, maybe:
 // Zoom indicator
 // Preload functionality
-// Make it slide
 // Async plugins
 // Imgur image page
 // Imgur albums
 // Nested slides [?]
 // Video loop/mute options
 // Minimal image size for inclusion [?]
-// Preload slides
+// Hotlink workaround [?]
 
 
 window.addEventListener('message', handleMessage, false);
@@ -41,11 +40,17 @@ class BasePlugin {
 class LinkPlugin extends BasePlugin {
 
     get url() {
-        return this.element.href;
+        var url = this.element.href;
+        // Protocol-relative doesn't work in a data url.
+        // TODO: Send protocol of parent instead of guessing https.
+        if (url.indexOf('//') === 0) {
+            url = `https:${url}`;
+        }
+        return url;
     }
 
     get canHandle() {
-        return this.element.tagName === 'A';
+        return Boolean(this.element.tagName === 'A' && this.element.href);
     }
 
     get title() {
@@ -64,15 +69,15 @@ class LinkPlugin extends BasePlugin {
 class ImageLink extends LinkPlugin {
 
     get canHandle() {
-        return (
+        return Boolean(
             super.canHandle &&
-            Boolean(this.element.href.match(/\.(bmp|jpe?g|gif|png|svg)$/i))
+            this.url.match(/\.(bmp|jpeg|jpg|gif|png|svg)$/i)
         );
     }
 
     get img() {
         const img = document.createElement('img');
-        img.src = this.element.href;
+        img.src = this.url;
         img.title = this.title;
         return img;
     }
@@ -93,7 +98,7 @@ class VideoLink extends LinkPlugin {
         const video = document.createElement('video');
         video.title = this.title;
         video.preload = 'auto';
-        video.autoplay = false;
+        video.autoplay = false; // TODO: support play onenter, pause onleave
         video.controls = true;
         video.muted = true;
         video.loop = true;
@@ -121,7 +126,7 @@ class GfyCat extends VideoLink {
     get node() {
         const figure = this.figure;
         const video = this.video;
-        video.poster = `https://thumbs.gfycat.com/${this.gfy}-mobile.jpg`;
+        video.poster = `https://thumbs.gfycat.com/${this.gfy}-poster.jpg`;
 
         // Gfycat uses a limited set of hostnames for content.
         // TODO: Implement API to get video URL instead of trying all hosts.
@@ -208,7 +213,6 @@ function handleMessage(event) {
         });
     });
 
-
     var current = 0;
     const max = slides.length;
 
@@ -218,24 +222,67 @@ function handleMessage(event) {
         slides: document.querySelector('#slides')
     };
 
-    const dummy = document.createElement('figure');
+    el.slides.appendChild(getSlide(current - 1));
+    el.slides.appendChild(getSlide(current));
+    el.slides.appendChild(getSlide(current + 1));
 
-    el.slides.appendChild(dummy);
-    el.slides.appendChild(slides[current].node);
-    el.slides.appendChild(slides[current + 1].node);
+    el.prev.addEventListener('click', prev);
+    el.next.addEventListener('click', next);
 
-    // Next
-    el.next.addEventListener('click', () => {
-        el.slides.classList.add('animate')
-        el.slides.classList.add('left');
+    // Preload.
+    // slides.forEach((slide) => {
+    //     var link = document.createElement('link');
+    //     link.rel = 'preload';
+    //     link.href = slide.url;
+    //     document.head.appendChild(link);
+    // });
+
+    let animating = false;
+
+    document.addEventListener('keyup', (event) => {
+        switch (event.which) {
+            // TODO: Escape button = exit.
+            case 37: prev();
+            case 39: next();
+        }
+    }, false);
+
+    function getSlide(index) {
+        return slides[index] ?
+            slides[index].node :
+            document.createElement('figure'); // Dummy
+    }
+
+    function prev() {
+        if (animating || current === 0) {
+            return;
+        }
+        animating = true;
+        el.slides.classList.add('animate', 'right');
+        window.setTimeout(() => {
+            current -= 1;
+            el.slides.classList.remove('animate');
+            el.slides.classList.remove('right');
+            el.slides.insertBefore(getSlide(current - 1), el.slides.childNodes[0]);
+            el.slides.removeChild(el.slides.childNodes[2]);
+            animating = false;
+        }, 305);
+    }
+
+    function next() {
+        if (animating || current + 1 === max) {
+            return;
+        }
+        animating = true;
+        el.slides.classList.add('animate', 'left');
         window.setTimeout(() => {
             current += 1;
             el.slides.classList.remove('animate');
             el.slides.classList.remove('left');
-            console.log(el.slides.childNodes[0])
+            el.slides.appendChild(getSlide(current + 1));
             el.slides.removeChild(el.slides.childNodes[0]);
-            el.slides.appendChild(slides[current + 1].node);
+            animating = false;
         }, 305);
-    });
+    }
 
 }

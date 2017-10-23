@@ -11,7 +11,7 @@
         }
 
         body {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             color: #fff;
             font: 14px sans-serif;
             text-align: center;
@@ -63,10 +63,6 @@
             height: 100vw;
         }
 
-        #slides.animate figure {
-            transition: all 0.3s;
-        }
-
         #prev,
         #next {
             width: 10vw;
@@ -101,34 +97,36 @@
             padding-left: 20px;
         }
 
-        #slides figure:nth-child(1) {
-            transform: translateX(-100vw) scale(0.5);
-            opacity: 0.5;
+        #slides.animate figure {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        #slides figure:nth-child(2) {
-            transform: translateX(0) scale(1);
-            opacity: 1;
+        figcaption {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100vw;
+            text-align: center;
+            line-height: 1em;
         }
 
-        #slides figure:nth-child(3) {
-            transform: translateX(100vw) scale(0.5);
-            opacity: 0.5;
-        }
-
-        #slides.left figure:nth-child(1) {
-            transform: translateX(-100vw) scale(0.5);
-            opacity: 0.5;
-        }
-
+        #slides figure:nth-child(1),
         #slides.left figure:nth-child(2) {
-            transform: translateX(-100vw) scale(0.5);
-            opacity: 0.5;
+            transform: translateX(-100vw);
+            opacity: 0;
         }
 
+        #slides figure:nth-child(2),
+        #slides.right figure:nth-child(1),
         #slides.left figure:nth-child(3) {
-            transform: translateX(0) scale(1);
+            transform: translateX(0);
             opacity: 1;
+        }
+
+        #slides figure:nth-child(3),
+        #slides.right figure:nth-child(2) {
+            transform: translateX(100vw);
+            opacity: 0;
         }
 
     </style>
