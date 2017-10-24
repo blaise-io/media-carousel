@@ -11,21 +11,10 @@
     frame.style.top = '0';
     frame.style.border = 'none';
     frame.style.zIndex = Math.pow(2, 24).toString();
-
-    // Get base template from this extension.
-    const request = new XMLHttpRequest();
-    request.open("GET", browser.extension.getURL("media-carousel.html"), false);
-    request.send(null);
-
-    // Replace script include with extension script URL.
-    // Set response HTML as iframe src.
-    var responseText = request.responseText;
-    responseText = responseText.replace('media-carousel.js', browser.extension.getURL('media-carousel.js'))
-    frame.setAttribute("src", "data:text/html," + encodeURIComponent(responseText));
-
-    // Add to document and focus the frame.
+    frame.src = browser.extension.getURL("media-carousel.html");
     document.documentElement.appendChild(frame);
 
+    // TODO: Prevent scrolling the parent frame while carousel is visible.
     // Send the current document to the frame to extract media.
     frame.addEventListener('load', () => {
         let element = document.body ? document.body : document.documentElement;
@@ -33,14 +22,10 @@
         frame.contentWindow.focus();
     });
 
-    // TODO: Prevent scrolling the parent frame while carousel is visible.
-
-    // Handle closing from within the frame.
-    function handleMessage(event) {
+    window.addEventListener('message', (event) => {
         if (event.data === 'close-media-carousel') {
             document.documentElement.removeChild(frame);
         }
-    }
-    window.addEventListener('message', handleMessage, false);
+    });
 
 })();
