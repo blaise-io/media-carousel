@@ -1,4 +1,9 @@
 {
+  "applications": {
+    "gecko": {
+      "id": "media-carousel@blaise.io"
+    }
+  },
   "manifest_version": 2,
   "name": "Media Carousel",
   "version": "0.1.0",
@@ -14,12 +19,16 @@
     }
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "web_accessible_resources": [
     "inject-overlay.js",
     "media-carousel.html",
     "media-carousel.css",
     "media-carousel.js"
-  ]
+  ],
+  "options_ui": {
+    "page": "options.html"
+  }
 }
