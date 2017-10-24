@@ -13,7 +13,7 @@ browser.browserAction.onClicked.addListener((tab) => {
     // Toggle carousel.
     browser.tabs.executeScript(
         openInTab[tab.id] ?
-            {code: "parent.postMessage('close-media-carousel', '*');"} :
+            {code: 'window.postMessage("close-media-carousel", "*")'} :
             {file: 'inject-overlay.js'}
     );
 

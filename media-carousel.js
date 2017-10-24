@@ -131,7 +131,7 @@ class GfyCat extends VideoLink {
         // Gfycat uses a limited set of hostnames for content.
         // TODO: Implement API to get video URL instead of trying all hosts.
         ['zippy', 'fat', 'giant'].forEach((bucket) => {
-            let source = this.source;
+            const source = this.source;
             source.src = `https://${bucket}.gfycat.com/${this.gfy}.mp4`;
             video.appendChild(source);
         });
@@ -263,7 +263,10 @@ function handleMessage(event) {
             current -= 1;
             el.slides.classList.remove('animate');
             el.slides.classList.remove('right');
-            el.slides.insertBefore(getSlide(current - 1), el.slides.childNodes[0]);
+            el.slides.insertBefore(
+                getSlide(current - 1),
+                el.slides.childNodes[0]
+            );
             el.slides.removeChild(el.slides.childNodes[2]);
             animating = false;
         }, 305);
