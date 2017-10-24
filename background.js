@@ -1,7 +1,7 @@
-var opened = {};
+const openInTab = {};
 
-function toggle(open) {
-    opened[tab.id] = open;
+function toggleState(tab, open) {
+    openInTab[tab.id] = open;
     browser.browserAction.setIcon({
         tabId: tab.id,
         path: `icons/64-${open ? 'on' : 'off'}.png`
@@ -9,19 +9,21 @@ function toggle(open) {
 }
 
 browser.browserAction.onClicked.addListener((tab) => {
-    if (!opened[tab.id]) {
-        browser.tabs.executeScript({file: 'inject-overlay.js'});
-    } else {
-        browser.tabs.executeScript({code: "window.parent.postMessage('close-media-carousel', '*');"});
-    }
 
-    // Handle carousel closing itself.
+    // Toggle carousel.
+    browser.tabs.executeScript(
+        openInTab[tab.id] ?
+            {code: "parent.postMessage('close-media-carousel', '*');"} :
+            {file: 'inject-overlay.js'}
+    );
+
+    // Handle carousel reporting open/closed.
     chrome.runtime.onMessage.addListener((message, sender) => {
         if (sender.tab.id === tab.id) {
             if (message.action === 'open') {
-                toggle(tab, true);
+                toggleState(tab, true);
             } else if (message.action === 'close') {
-                toggle(tab, false);
+                toggleState(tab, false);
             }
         }
     });
