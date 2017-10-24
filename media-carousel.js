@@ -21,7 +21,7 @@ const settings = {
     videoMute: true,
     videoLoop: true,
     videoControls: true
-}
+};
 
 
 class BasePlugin {
@@ -40,7 +40,7 @@ class BasePlugin {
 class LinkPlugin extends BasePlugin {
 
     get url() {
-        var url = this.element.href;
+        let url = this.element.href;
         // Protocol-relative doesn't work in a data url.
         // TODO: Send protocol of parent instead of guessing https.
         if (url.indexOf('//') === 0) {
@@ -213,7 +213,7 @@ function handleMessage(event) {
         });
     });
 
-    var current = 0;
+    let current = 0;
     const max = slides.length;
 
     const el = {
@@ -242,8 +242,8 @@ function handleMessage(event) {
     document.addEventListener('keyup', (event) => {
         switch (event.which) {
             // TODO: Escape button = exit.
-            case 37: prev();
-            case 39: next();
+            case 37: prev(); break;
+            case 39: next(); break;
         }
     }, false);
 

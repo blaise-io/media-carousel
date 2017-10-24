@@ -5,6 +5,23 @@
     "es6": true
   },
   "rules": {
-    "semi": 2
+    "no-console": 2,
+    "no-debugger": 2,
+    "no-trailing-spaces": 2,
+    "keyword-spacing": 2,
+    "space-before-function-paren": [2, "never"],
+    "spaced-comment": [2, "always"],
+    "comma-dangle": [2, "never"],
+    "quotes": [2, "single"],
+    "semi": [2, "always"],
+    "no-unused-vars": 2,
+    "no-extra-semi": 1,
+    "no-unreachable": 1,
+    "no-unused-expressions": 1,
+    "max-len": [1, 80, 4]
+  },
+  "globals": {
+    "browser": false,
+    "chrome": false
   }
 }
