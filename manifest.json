@@ -10,7 +10,7 @@
   },
   "browser_action": {
     "default_icon": {
-      "64": "icons/64.png"
+      "64": "icons/64-off.png"
     }
   },
   "permissions": [
@@ -19,6 +19,7 @@
   "web_accessible_resources": [
     "inject-overlay.js",
     "media-carousel.html",
+    "media-carousel.css",
     "media-carousel.js"
   ]
 }

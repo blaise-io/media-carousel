@@ -24,9 +24,12 @@
     window.addEventListener('message', (event) => {
         if (event.data === 'close-media-carousel') {
             document.documentElement.removeChild(frame);
+            // Notify background.js, which handles the toolbar button.
+            chrome.runtime.sendMessage({action: 'close'});
         }
     });
 
     document.documentElement.appendChild(frame);
+    chrome.runtime.sendMessage({action: 'open'});
 
 })();
