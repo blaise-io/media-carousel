@@ -1,0 +1,9 @@
+{
+  "include.image.embed": true,
+  "include.image.link": true,
+  "include.video.embed": true,
+  "include.video.link": true,
+  "video.mute": true,
+  "video.autoplay": true,
+  "video.loop": true
+}

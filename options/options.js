@@ -1,12 +1,8 @@
-const defaultOptions = {
-    'include.embeddedImages': false,
-    'include.linkedImages': true,
-    'include.embeddedVideos': true,
-    'include.linkedVideos': true,
-    'video.mute': true,
-    'video.loop': true,
-    'video.autoplay': true
-};
+const request = new XMLHttpRequest();
+request.open("GET", browser.extension.getURL('options/defaults.json'), false);
+request.send(null);
+const defaultOptions = JSON.parse(request.responseText);
+
 
 browser.storage.sync.get('options').then((result) => {
     restoreOptions(result.options);

@@ -1,33 +1,39 @@
-// TODO, maybe:
-// Zoom indicator
-// Preload functionality
-// Async plugins
-// Imgur image page
-// Imgur albums
-// Nested slides [?]
-// Video loop/mute options
-// Minimal image size for inclusion [?]
-// Hotlink workaround [?]
-
+/**
+ * TODO, MVP:
+ * Embedded images plugin
+ * Embedded video plugin
+ * YouTube plugin
+ * Vimeo plugin
+ * Handle no media
+ * Handle first/last
+ * Style title
+ * Show index
+ * Handle include.* options
+ * Test options sync
+ *
+ * TODO, maybe:
+ * Zoom indicator
+ * Preload functionality
+ * Async plugins
+ * Imgur image page
+ * Imgur albums
+ * Nested slides [?]
+ * Video loop/mute options
+ * Minimal image size for inclusion [?]
+ * Hotlink workaround [?]
+ */
 
 window.addEventListener('message', handleMessage, false);
 document.getElementById('close').addEventListener('click', () => {
     window.parent.postMessage('close-media-carousel', '*');
 });
 
-const settings = {
-    query: ['a[href]', 'img[src]', 'video'],
-    videoAutoplay: false,
-    videoMute: true,
-    videoLoop: true,
-    videoControls: true
-};
-
 
 class BasePlugin {
 
-    constructor(element) {
+    constructor(element, options) {
         this.element = element;
+        this.options = options;
     }
 
     get figure() {
@@ -98,10 +104,11 @@ class VideoLink extends LinkPlugin {
         const video = document.createElement('video');
         video.title = this.title;
         video.preload = 'auto';
-        video.autoplay = false; // TODO: support play onenter, pause onleave
+        // TODO: support onenter, onleave to handle autoplay.
+        video.autoplay = this.options['video.autoplay'];
         video.controls = true;
-        video.muted = true;
-        video.loop = true;
+        video.muted = this.options['video.mute'];
+        video.loop = this.options['video.loop'];
         return video;
     }
 
@@ -179,15 +186,15 @@ class ImgurGifv extends VideoLink {
 }
 
 
-const plugins = [ImageLink, GfyCat, ImgurGifv];  // Specialist plugins last.
-
 function handleMessage(event) {
-    const htmlStr = event.data;
+    const PLUGINS = [ImageLink, GfyCat, ImgurGifv];  // Specialist plugins last.
+    const data = JSON.parse(event.data);
     const htmlDoc = document.createElement('shadow');
-    htmlDoc.innerHTML = htmlStr;
+    htmlDoc.innerHTML = data.html;
 
     const slides = [];
-    const elements = htmlDoc.querySelectorAll(settings.query.join(','));
+    const query = ['a[href]', 'img[src]', 'video', 'iframe'];
+    const elements = htmlDoc.querySelectorAll(query.join(','));
 
     function getSlideIndex(url) {
         for (let i = 0, m = slides.length; i < m; i++) {
@@ -199,8 +206,8 @@ function handleMessage(event) {
     }
 
     elements.forEach((element) => {
-        plugins.forEach((PluginClass) => {
-            const plugin = new PluginClass(element);
+        PLUGINS.forEach((PluginClass) => {
+            const plugin = new PluginClass(data.options, element);
             if (plugin.canHandle) {
                 const existingSlideIndex = getSlideIndex(plugin.url);
                 if (existingSlideIndex !== -1 && plugin.title) {
