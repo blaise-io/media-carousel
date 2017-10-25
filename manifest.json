@@ -24,9 +24,7 @@
   ],
   "web_accessible_resources": [
     "inject-overlay.js",
-    "media-carousel/media-carousel.html",
-    "media-carousel/media-carousel.css",
-    "media-carousel/media-carousel.js"
+    "media-carousel/*"
   ],
   "options_ui": {
     "page": "options/options.html"

@@ -26,14 +26,24 @@
     // Send the current document to the frame to extract media.
     frame.addEventListener('load', () => {
         const element = document.body || document.documentElement;
+
+        // Make img.src absolute and augment tag with image size.
+        element.querySelectorAll('img[src]').forEach((img) => {
+            img.setAttribute('src', img.src);
+            img.setAttribute('data-mcext-width', img.offsetWidth);
+            img.setAttribute('data-mcext-height', img.offsetHeight);
+        });
+
+        // Make a.href absolute.
+        element.querySelectorAll('a[href]').forEach((a) => {
+            a.setAttribute('href', a.href);
+        });
+
         const message = JSON.stringify({
             html: element.innerHTML,
             options: options
         });
         frame.contentWindow.postMessage(message, '*');
-
-        // TODO: Keys aren't captured by frame; focus differently
-        // frame.contentWindow.focus();
     });
 
     window.addEventListener('message', (event) => {

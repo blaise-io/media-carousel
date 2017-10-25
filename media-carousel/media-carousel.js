@@ -1,35 +1,38 @@
 /**
  * TODO, MVP:
- * Embedded images plugin
- * Embedded video plugin
- * YouTube plugin
- * Vimeo plugin
- * Handle no media
- * Handle first/last
- * Style title
- * Show index
+ * Embedded video plugin for <video> tags
+ * YouTube link plugin
+ * Hide navigation when at first/last
+ * Don't scroll figcaption
+ * Show current/max indicator
  * Handle include.* options
- * Test options sync
+ * Test if options sync works across devices
+ * Extract carousel stuff from handleMessage(), create Carousel class
+ *
  *
  * TODO, maybe:
- * Zoom indicator
+ * Replace no media alert with HTML
+ * Steal focus from host page
+ * No media message
+ * Zoom indicator and click to real-size / scroll
  * Preload functionality
  * Async plugins
- * Imgur image page
  * Imgur albums
- * Nested slides [?]
- * Video loop/mute options
- * Minimal image size for inclusion [?]
- * Hotlink workaround [?]
+ * Vimeo link plugin
+ * Nested slides
+ * Minimal media size for inclusion
+ * Hotlink workaround (e.g. Twitter)
+ * Prevent parent scroll
  */
 
 window.addEventListener('message', handleMessage, false);
-document.getElementById('close').addEventListener('click', () => {
-    window.parent.postMessage('close-media-carousel', '*');
-});
+document.getElementById('close').addEventListener('click', close);
 
+function close() {
+    parent.postMessage('close-media-carousel', '*');
+}
 
-class BasePlugin {
+class Base {
 
     constructor(element, options) {
         this.element = element;
@@ -38,29 +41,6 @@ class BasePlugin {
 
     get figure() {
         return document.createElement('figure');
-    }
-
-}
-
-
-class LinkPlugin extends BasePlugin {
-
-    get url() {
-        let url = this.element.href;
-        // Protocol-relative doesn't work in a data url.
-        // TODO: Send protocol of parent instead of guessing https.
-        if (url.indexOf('//') === 0) {
-            url = `https:${url}`;
-        }
-        return url;
-    }
-
-    get canHandle() {
-        return Boolean(this.element.tagName === 'A' && this.element.href);
-    }
-
-    get title() {
-        return this.element.title || this.element.textContent;
     }
 
     get figcaption() {
@@ -72,14 +52,7 @@ class LinkPlugin extends BasePlugin {
 }
 
 
-class ImageLink extends LinkPlugin {
-
-    get canHandle() {
-        return Boolean(
-            super.canHandle &&
-            this.url.match(/\.(bmp|jpeg|jpg|gif|png|svg)$/i)
-        );
-    }
+class Image extends Base {
 
     get img() {
         const img = document.createElement('img');
@@ -95,10 +68,65 @@ class ImageLink extends LinkPlugin {
         return figure;
     }
 
+    get imgExtRegexp() {
+        return /\.(bmp|jpeg|jpg|gif|png|svg)$/i;
+    }
+
 }
 
 
-class VideoLink extends LinkPlugin {
+class ImageEmbed extends Image {
+
+    get url() {
+        return this.element.src;
+    }
+
+    get canHandle() {
+        // Exclude thumbnails and other tiny images.
+        // http://gph.is/1efSlt9
+        return Boolean(
+            this.element.tagName === 'IMG' &&
+            this.element.getAttribute('data-mcext-width') *
+            this.element.getAttribute('data-mcext-height') > 250 * 250
+        );
+    }
+
+    get title() {
+        return this.element.title || this.element.alt;
+    }
+
+}
+
+
+class ImageLink extends Image {
+
+    get url() {
+        return this.element.href;
+    }
+
+    get canHandle() {
+        return Boolean(
+            this.element.tagName === 'A' &&
+            this.url.match(this.imgExtRegexp)
+        );
+    }
+
+    get title() {
+        return this.element.title || this.element.textContent;
+    }
+
+}
+
+
+class VideoLink extends Base {
+
+    get url() {
+        return this.element.href;
+    }
+
+    get canHandle() {
+        return Boolean(this.element.tagName === 'A' && this.url);
+    }
 
     get video() {
         const video = document.createElement('video');
@@ -106,8 +134,8 @@ class VideoLink extends LinkPlugin {
         video.preload = 'auto';
         // TODO: support onenter, onleave to handle autoplay.
         video.autoplay = this.options['video.autoplay'];
-        video.controls = true;
-        video.muted = this.options['video.mute'];
+        video.controls = this.options['video.controls'];
+        video.muted = this.options['video.muted'];
         video.loop = this.options['video.loop'];
         return video;
     }
@@ -118,6 +146,10 @@ class VideoLink extends LinkPlugin {
         return source;
     }
 
+    get title() {
+        return this.element.title || this.element.textContent;
+    }
+
 }
 
 
@@ -126,7 +158,7 @@ class GfyCat extends VideoLink {
     get canHandle() {
         return (
             super.canHandle &&
-            Boolean(this.element.href.match(/^https?:\/\/gfycat\.com/))
+            Boolean(this.url.match(/^https?:\/\/gfycat\.com/))
         );
     }
 
@@ -187,7 +219,8 @@ class ImgurGifv extends VideoLink {
 
 
 function handleMessage(event) {
-    const PLUGINS = [ImageLink, GfyCat, ImgurGifv];  // Specialist plugins last.
+    // Specialist plugins last.
+    const PLUGINS = [ImageEmbed, ImageLink, GfyCat, ImgurGifv];
     const data = JSON.parse(event.data);
     const htmlDoc = document.createElement('shadow');
     htmlDoc.innerHTML = data.html;
@@ -207,7 +240,7 @@ function handleMessage(event) {
 
     elements.forEach((element) => {
         PLUGINS.forEach((PluginClass) => {
-            const plugin = new PluginClass(data.options, element);
+            const plugin = new PluginClass(element, data.options);
             if (plugin.canHandle) {
                 const existingSlideIndex = getSlideIndex(plugin.url);
                 if (existingSlideIndex !== -1 && plugin.title) {
@@ -219,6 +252,12 @@ function handleMessage(event) {
             }
         });
     });
+
+    if (!slides.length) {
+        window.alert('No supported media found on this page.');
+        close();
+        return;
+    }
 
     let current = 0;
     const max = slides.length;
@@ -248,11 +287,11 @@ function handleMessage(event) {
 
     document.addEventListener('keyup', (event) => {
         switch (event.which) {
-            // TODO: Escape button = exit.
-            case 37: prev(); break;
-            case 39: next(); break;
+            case 27: close(); break; // Esc
+            case 37: prev();  break; // ◄
+            case 39: next();  break; // ►
         }
-    }, false);
+    });
 
     function getSlide(index) {
         return slides[index] ?
