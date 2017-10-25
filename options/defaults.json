@@ -3,7 +3,8 @@
   "include.image.link": true,
   "include.video.embed": true,
   "include.video.link": true,
-  "video.mute": true,
+  "video.muted": false,
+  "video.controls": true,
   "video.autoplay": true,
   "video.loop": true
 }

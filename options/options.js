@@ -1,14 +1,15 @@
+document.addEventListener('input', saveOptions);
+
 const request = new XMLHttpRequest();
-request.open("GET", browser.extension.getURL('options/defaults.json'), false);
+request.open('GET', browser.extension.getURL('options/defaults.json'), false);
 request.send(null);
+
 const defaultOptions = JSON.parse(request.responseText);
 
 
 browser.storage.sync.get('options').then((result) => {
     restoreOptions(result.options);
 });
-
-document.addEventListener('input', saveOptions);
 
 function restoreOptions(options) {
     document.querySelectorAll('input[type=checkbox][name]').forEach((input) => {
