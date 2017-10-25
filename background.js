@@ -1,18 +1,20 @@
-const openInTab = {};
+const tabsWithCarousel = {};
 
-function toggleState(tab, open) {
-    openInTab[tab.id] = open;
+// Toggle icon for tab.
+function toggleState(tabId, open) {
+    tabsWithCarousel[tabId] = open;
     browser.browserAction.setIcon({
-        tabId: tab.id,
+        tabId: tabId,
         path: `icons/64-${open ? 'on' : 'off'}.png`
     });
 }
 
+// Handle toolbar button click.
 browser.browserAction.onClicked.addListener((tab) => {
 
     // Toggle carousel.
     browser.tabs.executeScript(
-        openInTab[tab.id] ?
+        tabsWithCarousel[tab.id] ?
             {code: 'window.postMessage("close-media-carousel", "*")'} :
             {file: 'inject-overlay.js'}
     );
@@ -21,11 +23,18 @@ browser.browserAction.onClicked.addListener((tab) => {
     chrome.runtime.onMessage.addListener((message, sender) => {
         if (sender.tab.id === tab.id) {
             if (message.action === 'open') {
-                toggleState(tab, true);
+                toggleState(tab.id, true);
             } else if (message.action === 'close') {
-                toggleState(tab, false);
+                toggleState(tab.id, false);
             }
         }
     });
 
+});
+
+// Toggle state when navigating to another page.
+browser.tabs.onUpdated.addListener((tabId) => {
+    if (tabsWithCarousel[tabId]) {
+        toggleState(tabId, false);
+    }
 });
