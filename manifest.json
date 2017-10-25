@@ -24,11 +24,11 @@
   ],
   "web_accessible_resources": [
     "inject-overlay.js",
-    "media-carousel.html",
-    "media-carousel.css",
-    "media-carousel.js"
+    "media-carousel/media-carousel.html",
+    "media-carousel/media-carousel.css",
+    "media-carousel/media-carousel.js"
   ],
   "options_ui": {
-    "page": "options.html"
+    "page": "options/options.html"
   }
 }

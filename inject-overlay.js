@@ -1,5 +1,3 @@
-// TODO: Send message to background.js when the overlay is closed.
-// Create a new scope each time the extension is activated.
 (function() {
 
     // Setup full-window frame.
@@ -11,7 +9,7 @@
     frame.style.top = '0';
     frame.style.border = 'none';
     frame.style.zIndex = Math.pow(2, 24).toString();
-    frame.src = browser.extension.getURL('media-carousel.html');
+    frame.src = browser.extension.getURL('media-carousel/media-carousel.html');
 
     // TODO: Prevent scrolling the parent frame while carousel is visible.
     // Send the current document to the frame to extract media.
