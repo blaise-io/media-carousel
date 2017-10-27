@@ -1,21 +1,38 @@
 const tabsWithCarousel = {};
 
-// Toggle icon for tab.
-function toggleState(tabId, open) {
-    tabsWithCarousel[tabId] = open;
-    browser.browserAction.setIcon({
-        tabId: tabId,
-        path: `icons/64-${open ? 'on' : 'off'}.png`
-    });
+// Set state and icon.
+function updateState(tabId, hasCarousel) {
+    tabsWithCarousel[tabId] = hasCarousel;
+    updateIcon(tabId);
 }
+
+// Set icon and title.
+function updateIcon(tabId) {
+    const icon = tabsWithCarousel[tabId] ? 'on' : 'off';
+    const title = tabsWithCarousel[tabId] ?
+        'Close carousel' :
+        'Display media on this page in a carousel';
+    browser.browserAction.setIcon({tabId: tabId, path: `icons/64-${icon}.png`});
+    browser.browserAction.setTitle({tabId: tabId, title: title});
+}
+
+// Set initial state.
+browser.tabs.onActivated.addListener((activeInfo) => {
+    updateIcon(activeInfo.tabId);
+});
+
+// New page in a tab won't have a carousel until the user adds it.
+browser.tabs.onUpdated.addListener((tabId) => {
+    updateState(tabId, false);
+});
 
 // Handle toolbar button click.
 browser.browserAction.onClicked.addListener((tab) => {
 
     // Toggle carousel.
-    browser.tabs.executeScript(
+    browser.tabs.executeScript(tab.id,
         tabsWithCarousel[tab.id] ?
-            {code: 'window.postMessage("close-media-carousel", "*")'} :
+            {code: 'window.postMessage("close-carousel", "*")'} :
             {file: 'inject-overlay.js'}
     );
 
@@ -23,18 +40,11 @@ browser.browserAction.onClicked.addListener((tab) => {
     chrome.runtime.onMessage.addListener((message, sender) => {
         if (sender.tab.id === tab.id) {
             if (message.action === 'open') {
-                toggleState(tab.id, true);
+                updateState(tab.id, true);
             } else if (message.action === 'close') {
-                toggleState(tab.id, false);
+                updateState(tab.id, false);
             }
         }
     });
 
-});
-
-// Toggle state when navigating to another page.
-browser.tabs.onUpdated.addListener((tabId) => {
-    if (tabsWithCarousel[tabId]) {
-        toggleState(tabId, false);
-    }
 });
