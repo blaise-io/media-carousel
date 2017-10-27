@@ -5,9 +5,10 @@ let options = {};
 const defaultOptionsPromise = new Promise((resolve) => {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', browser.extension.getURL('options/defaults.json'));
+    xhr.overrideMimeType('application/json');
     xhr.send(null);
-    xhr.onload = function() {
-        resolve(JSON.parse(this.response));
+    xhr.onload = () => {
+        resolve(JSON.parse(xhr.response));
     };
 });
 
