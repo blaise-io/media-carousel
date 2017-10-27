@@ -1,30 +1,65 @@
 (function() {
 
-    // Setup full-window frame.
-    const frame = document.createElement('iframe');
-    frame.style.position = 'fixed';
-    frame.style.width = '100vw';
-    frame.style.height = '100vh';
-    frame.style.left = '0';
-    frame.style.top = '0';
-    frame.style.border = 'none';
-    frame.style.zIndex = Math.pow(2, 24).toString();
-    frame.src = browser.extension.getURL('media-carousel/media-carousel.html');
+    // Executed in host window context.
+    // Create new scope every time toolbar button is clicked.
 
-    const request = new XMLHttpRequest();
-    const defaults = browser.extension.getURL('options/defaults.json');
-    request.open('GET', defaults, false);
-    request.send(null);
-
-    const options = JSON.parse(request.responseText);
-    browser.storage.sync.get('options').then((result) => {
-        Object.assign(options, result.options);
+    const defaultOptionsPromise = new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', browser.extension.getURL('options/defaults.json'));
+        xhr.send(null);
+        xhr.onload = function() {
+            resolve(JSON.parse(this.response));
+        };
     });
 
-    // TODO: Prevent a race condition with async fetching options from storage.
-    // TODO: Prevent scrolling the parent frame while carousel is visible.
-    // Send the current document to the frame to extract media.
-    frame.addEventListener('load', () => {
+    const savedOptionsPromise = browser.storage.sync.get('options');
+
+    const overlayPromise = new Promise((resolve) => {
+        const frame = document.createElement('iframe');
+        frame.style.position = 'fixed';
+        frame.style.width = '100vw';
+        frame.style.height = '100vh';
+        frame.style.left = '0';
+        frame.style.top = '0';
+        frame.style.border = 'none';
+        frame.style.zIndex = Math.pow(2, 24).toString();
+        frame.src = browser.extension.getURL('carousel/carousel.html');
+        frame.addEventListener('load', () => {
+            resolve(frame);
+        });
+        document.documentElement.appendChild(frame);
+    });
+
+    const promises = [
+        defaultOptionsPromise,
+        savedOptionsPromise,
+        overlayPromise
+    ];
+
+    Promise.all(promises).then((result) => {
+        const options = Object.assign(result[0], result[1].options);
+        const frame = result[2];
+
+        chrome.runtime.sendMessage({action: 'open'});
+        addCloseListener(frame);
+
+        frame.contentWindow.postMessage(JSON.stringify({
+            html: getPatchedHTML(),
+            options: options
+        }), '*');
+    });
+
+    function addCloseListener(frame) {
+        window.addEventListener('message', (event) => {
+            if (event.data === 'close-carousel') {
+                document.documentElement.removeChild(frame);
+                // Notify background.js, which handles the toolbar button.
+                chrome.runtime.sendMessage({action: 'close'});
+            }
+        });
+    }
+
+    function getPatchedHTML() {
         const element = document.body || document.documentElement;
 
         // Make img.src absolute and augment tag with image size.
@@ -39,22 +74,7 @@
             a.setAttribute('href', a.href);
         });
 
-        const message = JSON.stringify({
-            html: element.innerHTML,
-            options: options
-        });
-        frame.contentWindow.postMessage(message, '*');
-    });
-
-    window.addEventListener('message', (event) => {
-        if (event.data === 'close-media-carousel') {
-            document.documentElement.removeChild(frame);
-            // Notify background.js, which handles the toolbar button.
-            chrome.runtime.sendMessage({action: 'close'});
-        }
-    });
-
-    document.documentElement.appendChild(frame);
-    chrome.runtime.sendMessage({action: 'open'});
+        return element.innerHTML;
+    }
 
 })();
