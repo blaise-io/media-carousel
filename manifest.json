@@ -14,6 +14,7 @@
     ]
   },
   "browser_action": {
+    "browser_style": true,
     "default_icon": {
       "64": "icons/64-off.png"
     }
@@ -24,7 +25,7 @@
   ],
   "web_accessible_resources": [
     "inject-overlay.js",
-    "media-carousel/*"
+    "carousel/*"
   ],
   "options_ui": {
     "page": "options/options.html"

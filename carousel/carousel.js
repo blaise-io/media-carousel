@@ -29,7 +29,7 @@ window.addEventListener('message', handleMessage, false);
 document.getElementById('close').addEventListener('click', close);
 
 function close() {
-    parent.postMessage('close-media-carousel', '*');
+    parent.postMessage('close-carousel', '*');
 }
 
 class Base {
