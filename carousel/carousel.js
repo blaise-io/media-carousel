@@ -2,12 +2,9 @@
  * TODO, MVP:
  * Imgur albums using imgur's embed code
  * YouTube link plugin
- * Hide navigation when at first/last
- * Show current/max indicator
  * Handle include.* options
  * Test if options sync works across devices
  * Extract carousel stuff from handleMessage(), create Carousel class
- *
  *
  * TODO, maybe:
  * Embedded video plugin for <video> tags
