@@ -6,11 +6,18 @@
     <link rel="stylesheet" href="carousel.css">
 </head>
 <body>
-    <a id="close">&times;</a>
     <div id="content">
         <div id="slides"></div>
-        <div id="prev">〈</div>
-        <div id="next">〉</div>
+        <div id="caption" class="text-shadow">
+            <span id="caption-content">
+                <span id="position">
+                    <span id="current">0</span>/<span id="max">0</span>
+                </span>
+                <span id="title"></span>
+            </span>
+        </div>
+        <div id="prev" class="nav text-shadow">〈</div>
+        <div id="next" class="nav text-shadow">〉</div>
     </div>
     <script src="carousel.js"></script>
 </body>

@@ -5,7 +5,7 @@
 }
 
 body {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.7);
     color: #fff;
     font: 14px sans-serif;
     text-align: center;
@@ -28,45 +28,55 @@ img, video {
     margin: 0 auto 5px;
 }
 
-figcaption a {
-    text-decoration: none;
-    color: inherit;
+/**
+ * Text shadow (better result than -webkit-outline, which also works in Gecko).
+ */
+.text-shadow {
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    text-shadow:  0      -0.05vh 0 var(--shadow-color),  /* t */
+                  0.25vh -0.05vh 0 var(--shadow-color),  /* tr */
+                  0.25vh  0      0 var(--shadow-color),  /* r */
+                  0.25vh  0.08vh 0 var(--shadow-color),  /* br */
+                  0       0.08vh 0 var(--shadow-color),  /* b */
+                 -0.05vh  0.08vh 0 var(--shadow-color),  /* bl */
+                 -0.05vh  0      0 var(--shadow-color),  /* l */
+                 -0.05vh -0.05vh 0 var(--shadow-color);  /* tl */
 }
 
-#close {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1;
-    border-radius: 3px;
-    background: #000;
-    color: red;
-    padding: 3px 7px;
-    font-size: 16px;
-    opacity: 1;
-    user-select: none;
-    cursor: pointer;
-}
-
-#slides figure {
-    transform-origin: 50% 50%;
+#caption {
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100vw;
-    height: 100vw;
+    text-align: center;
+}
+    #caption-content {
+        font-size: 2.5vh;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1vh 2vh 0.7vh;
+        display: inline-block;
+        border-radius: 0 0 0.5vh 0.5vh;
+    }
+
+
+#position {
+    margin-right: 5px;
 }
 
-#prev,
-#next {
+#current, #max {
+    color: #ccc;
+    padding: 0 0.2em;
+}
+
+.nav {
     width: 10vw;
     max-width: 80px;
     position: absolute;
     top: 0;
     height: 100vh;
     line-height: 100vh;
-    font-size: 50px;
-    background: rgba(0,0,0,0.3);
+    font-size: 10vh;
     cursor: pointer;
     opacity: 0;
     transition: all 0.1s;
@@ -74,10 +84,15 @@ figcaption a {
     -moz-user-select: none;
 }
 
-#prev:hover,
-#next:hover {
+.nav:hover {
     opacity: 1;
 }
+
+.nav.disabled {
+    pointer-events: none;
+    opacity: 0 !important;
+}
+
 
 #prev {
     left: 0;
@@ -92,22 +107,31 @@ figcaption a {
 }
 
 #slides.animate figure {
-    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-figcaption {
+#slides figure img,
+#slides figure video,
+#slides figure iframe {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+#slides figure {
+    transform-origin: center center;
     position: absolute;
-    top: 10px;
     left: 0;
+    top: 0;
     width: 100vw;
-    text-align: center;
-    line-height: 1em;
+    height: 100vw;
 }
 
+/**
+ * Positioning
+ */
 #slides figure:nth-child(1),
 #slides.left figure:nth-child(2) {
     transform: translateX(-100vw);
-    opacity: 0;
+    opacity: 0.5;
 }
 
 #slides figure:nth-child(2),
@@ -120,5 +144,5 @@ figcaption {
 #slides figure:nth-child(3),
 #slides.right figure:nth-child(2) {
     transform: translateX(100vw);
-    opacity: 0;
+    opacity: 0.5;
 }

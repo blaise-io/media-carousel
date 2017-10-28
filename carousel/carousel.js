@@ -1,9 +1,8 @@
 /**
  * TODO, MVP:
- * Embedded video plugin for <video> tags
+ * Imgur albums using imgur's embed code
  * YouTube link plugin
  * Hide navigation when at first/last
- * Don't scroll figcaption
  * Show current/max indicator
  * Handle include.* options
  * Test if options sync works across devices
@@ -11,13 +10,14 @@
  *
  *
  * TODO, maybe:
+ * Embedded video plugin for <video> tags
  * Replace no media alert with HTML
  * Steal focus from host page
  * No media message
  * Zoom indicator and click to real-size / scroll
- * Preload functionality
+ * Preload multiple slides
  * Async plugins
- * Imgur albums
+ * Imgur albums using API
  * Vimeo link plugin
  * Nested slides
  * Minimal media size for inclusion
@@ -26,11 +26,6 @@
  */
 
 window.addEventListener('message', handleMessage, false);
-document.getElementById('close').addEventListener('click', close);
-
-function close() {
-    parent.postMessage('close-carousel', '*');
-}
 
 class Base {
 
@@ -43,11 +38,12 @@ class Base {
         return document.createElement('figure');
     }
 
-    get figcaption() {
-        const figcaption = document.createElement('figcaption');
-        figcaption.innerHTML = `<a href="${this.url}">${this.title}</a>`;
-        return figcaption;
-    }
+    // get figcaption() {
+    //     const figcaption = document.createElement('figcaption');
+    //     figcaption.classList.add('text-shadow');
+    //     figcaption.innerHTML = `<a href="${this.url}">${this.title}</a>`;
+    //     return figcaption;
+    // }
 
 }
 
@@ -64,7 +60,6 @@ class Image extends Base {
     get node() {
         const figure = this.figure;
         figure.appendChild(this.img);
-        figure.appendChild(this.figcaption);
         return figure;
     }
 
@@ -158,7 +153,7 @@ class GfyCat extends VideoLink {
     get canHandle() {
         return (
             super.canHandle &&
-            Boolean(this.url.match(/^https?:\/\/gfycat\.com/))
+            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[\w]+/i))
         );
     }
 
@@ -176,7 +171,7 @@ class GfyCat extends VideoLink {
         });
 
         figure.appendChild(video);
-        figure.appendChild(this.figcaption);
+        // figure.appendChild(this.figcaption);
 
         return figure;
     }
@@ -207,7 +202,7 @@ class ImgurGifv extends VideoLink {
         video.appendChild(source);
 
         figure.appendChild(video);
-        figure.appendChild(this.figcaption);
+        // figure.appendChild(this.figcaption);
 
         return figure;
     }
@@ -265,15 +260,20 @@ function handleMessage(event) {
     const el = {
         prev: document.querySelector('#prev'),
         next: document.querySelector('#next'),
-        slides: document.querySelector('#slides')
+        slides: document.querySelector('#slides'),
+        title: document.querySelector('#title'),
+        current: document.querySelector('#current'),
+        max: document.querySelector('#max')
     };
+
+    el.prev.addEventListener('click', prev);
+    el.next.addEventListener('click', next);
 
     el.slides.appendChild(getSlide(current - 1));
     el.slides.appendChild(getSlide(current));
     el.slides.appendChild(getSlide(current + 1));
 
-    el.prev.addEventListener('click', prev);
-    el.next.addEventListener('click', next);
+    postHtmlUpdate();
 
     // Preload.
     // slides.forEach((slide) => {
@@ -307,15 +307,14 @@ function handleMessage(event) {
         el.slides.classList.add('animate', 'right');
         window.setTimeout(() => {
             current -= 1;
-            el.slides.classList.remove('animate');
-            el.slides.classList.remove('right');
+            preHtmlUpdate();
+            el.slides.removeChild(el.slides.childNodes[2]);
             el.slides.insertBefore(
                 getSlide(current - 1),
                 el.slides.childNodes[0]
             );
-            el.slides.removeChild(el.slides.childNodes[2]);
-            animating = false;
-        }, 305);
+            postHtmlUpdate();
+        }, 205);
     }
 
     function next() {
@@ -326,12 +325,40 @@ function handleMessage(event) {
         el.slides.classList.add('animate', 'left');
         window.setTimeout(() => {
             current += 1;
-            el.slides.classList.remove('animate');
-            el.slides.classList.remove('left');
+
+            preHtmlUpdate();
+
             el.slides.appendChild(getSlide(current + 1));
             el.slides.removeChild(el.slides.childNodes[0]);
-            animating = false;
-        }, 305);
+
+            postHtmlUpdate();
+
+        }, 205);
     }
 
+    function preHtmlUpdate() {
+        // Remove animate class first or it will animate left/right removal.
+        el.slides.classList.remove('animate');
+        el.slides.classList.remove('left', 'right');
+        animating = false;
+    }
+
+    function postHtmlUpdate() {
+        el.current.textContent = String(current + 1);
+        el.max.textContent = String(max);
+        // innerHTML because string may contain html entities.
+        el.title.innerHTML = slides[current].title;
+
+        el.prev.classList.toggle('disabled', current === 0);
+        el.next.classList.toggle('disabled', current + 1 === max);
+    }
+
+}
+
+function close() {
+    postMessage({close: true});
+}
+
+function postMessage(data) {
+    parent.postMessage(JSON.stringify({mcext: data}), '*');
 }

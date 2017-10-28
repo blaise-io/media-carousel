@@ -32,7 +32,7 @@ browser.browserAction.onClicked.addListener((tab) => {
     // Toggle carousel.
     browser.tabs.executeScript(tab.id,
         tabsWithCarousel[tab.id] ?
-            {code: 'window.postMessage("close-carousel", "*")'} :
+            {code: 'window.postMessage(`{"mcext": {"close": true}}`, "*")'} :
             {file: 'inject-overlay.js'}
     );
 

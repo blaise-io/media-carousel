@@ -42,7 +42,8 @@
         const frame = result[2];
 
         chrome.runtime.sendMessage({action: 'open'});
-        addCloseListener(frame);
+        addMessageListener(frame);
+        setBlur(frame, true);
 
         frame.contentWindow.postMessage(JSON.stringify({
             html: getPatchedHTML(),
@@ -50,9 +51,21 @@
         }), '*');
     });
 
-    function addCloseListener(frame) {
+    function addMessageListener(frame) {
         window.addEventListener('message', (event) => {
-            if (event.data === 'close-carousel') {
+            let data;
+            try {
+                data = JSON.parse(event.data)['mcext'];
+            } catch (e) {
+                // Not our message.
+            }
+
+            if (!data) {
+                return;
+            }
+
+            if (data.close) {
+                setBlur(frame, false);
                 document.documentElement.removeChild(frame);
                 // Notify background.js, which handles the toolbar button.
                 chrome.runtime.sendMessage({action: 'close'});
@@ -76,6 +89,14 @@
         });
 
         return element.innerHTML;
+    }
+
+    function setBlur(frame, enable) {
+        frame.parentNode.childNodes.forEach((element) => {
+            if (element && element !== frame && element.offsetWidth) {
+                element.style.filter = enable ? 'blur(1px)' : '';
+            }
+        });
     }
 
 })();
