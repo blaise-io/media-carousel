@@ -20,7 +20,7 @@ figure {
     line-height: 100vh;
 }
 
-img, video {
+img, video, iframe {
     display: inline-block;
     vertical-align: middle;
     max-width: 100vw;

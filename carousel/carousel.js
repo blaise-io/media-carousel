@@ -1,6 +1,5 @@
 /**
  * TODO, MVP:
- * Imgur albums using imgur's embed code
  * YouTube link plugin
  * Handle include.* options
  * Test if options sync works across devices
@@ -10,19 +9,17 @@
  * Embedded video plugin for <video> tags
  * Replace no media alert with HTML
  * Steal focus from host page
- * No media message
+ * Design "No media" message
  * Zoom indicator and click to real-size / scroll
  * Preload multiple slides
  * Async plugins
  * Imgur albums using API
  * Vimeo link plugin
- * Nested slides
- * Minimal media size for inclusion
  * Hotlink workaround (e.g. Twitter)
  * Prevent parent scroll
  */
 
-window.addEventListener('message', handleMessage, false);
+window.addEventListener('message', handleMessage);
 
 class Base {
 
@@ -181,7 +178,7 @@ class ImgurGifv extends VideoLink {
     }
 
     get node() {
-        const figure = document.createElement('figure');
+        const figure = this.figure;
 
         const video = this.video;
         video.poster = `https://i.imgur.com/${this.imgurid}h.jpg`;
@@ -201,9 +198,50 @@ class ImgurGifv extends VideoLink {
 }
 
 
+
+class ImgurAlbum extends Base {
+
+    get url() {
+        return this.element.href;
+    }
+
+    get canHandle() {
+        return Boolean(
+            this.element.tagName === 'A' &&
+            this.url.match(/imgur\.com\/a\/[\w\d]+/i)
+        );
+    }
+
+    get title() {
+        return this.element.title || this.element.textContent;
+    }
+
+    get node() {
+        const frame = document.createElement('iframe');
+        frame.src = `https://imgur.com/a/${this.imgurid}/embed?pub=true&` +
+                    `ref=${encodeURIComponent(this.url)}`;
+        frame.height = Math.min(window.innerHeight * 0.9, 768);
+        frame.width = Math.min(window.innerWidth * 0.8, 1024);
+        frame.overflow = 'scroll';
+
+        const figure = this.figure;
+        figure.appendChild(frame);
+
+        return figure;
+    }
+
+    get imgurid() {
+        return this.url.match(/imgur\.com\/a\/([\w\d]+)/i)[1];
+    }
+}
+
+
 function handleMessage(event) {
+    // One carousel per document.
+    window.removeEventListener('message', handleMessage);
+
     // Specialist plugins last.
-    const PLUGINS = [ImageEmbed, ImageLink, GfyCat, ImgurGifv];
+    const PLUGINS = [ImageEmbed, ImageLink, GfyCat, ImgurGifv, ImgurAlbum];
     const data = JSON.parse(event.data);
     const htmlDoc = document.createElement('shadow');
     htmlDoc.innerHTML = data.html;
@@ -242,6 +280,7 @@ function handleMessage(event) {
         return;
     }
 
+    let animating = false;
     let current = 0;
     const max = slides.length;
 
@@ -262,16 +301,6 @@ function handleMessage(event) {
     el.slides.appendChild(getSlide(current + 1));
 
     postHtmlUpdate();
-
-    // Preload.
-    // slides.forEach((slide) => {
-    //     var link = document.createElement('link');
-    //     link.rel = 'preload';
-    //     link.href = slide.url;
-    //     document.head.appendChild(link);
-    // });
-
-    let animating = false;
 
     document.addEventListener('keyup', (event) => {
         switch (event.which) {
@@ -340,7 +369,6 @@ function handleMessage(event) {
         el.prev.classList.toggle('disabled', current === 0);
         el.next.classList.toggle('disabled', current + 1 === max);
     }
-
 }
 
 function close() {
