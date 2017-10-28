@@ -35,13 +35,6 @@ class Base {
         return document.createElement('figure');
     }
 
-    // get figcaption() {
-    //     const figcaption = document.createElement('figcaption');
-    //     figcaption.classList.add('text-shadow');
-    //     figcaption.innerHTML = `<a href="${this.url}">${this.title}</a>`;
-    //     return figcaption;
-    // }
-
 }
 
 
@@ -168,7 +161,6 @@ class GfyCat extends VideoLink {
         });
 
         figure.appendChild(video);
-        // figure.appendChild(this.figcaption);
 
         return figure;
     }
@@ -199,7 +191,6 @@ class ImgurGifv extends VideoLink {
         video.appendChild(source);
 
         figure.appendChild(video);
-        // figure.appendChild(this.figcaption);
 
         return figure;
     }
