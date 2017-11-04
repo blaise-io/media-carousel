@@ -4,10 +4,17 @@
     border: none;
 }
 
+:root {
+    --font-size-text: 20px;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --font-size-nav: 90px;
+}
+
+
 body {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
     color: #fff;
-    font: 14px sans-serif;
+    font: var(--font-size-text) helvetica, helvetica-neue, arial, sans-serif;
     text-align: center;
     width: 100vw;
     height: 100vh;
@@ -32,31 +39,31 @@ img, video, iframe {
  * Text shadow (better result than -webkit-outline, which also works in Gecko).
  */
 .text-shadow {
-    --shadow-color: rgba(0, 0, 0, 0.4);
     color: #fff;
-    text-shadow:  0      -0.05vh 0 var(--shadow-color),  /* t */
-                  0.25vh -0.05vh 0 var(--shadow-color),  /* tr */
-                  0.25vh  0      0 var(--shadow-color),  /* r */
-                  0.25vh  0.08vh 0 var(--shadow-color),  /* br */
-                  0       0.08vh 0 var(--shadow-color),  /* b */
-                 -0.05vh  0.08vh 0 var(--shadow-color),  /* bl */
-                 -0.05vh  0      0 var(--shadow-color),  /* l */
-                 -0.05vh -0.05vh 0 var(--shadow-color);  /* tl */
+    text-shadow:  0     -1px   0 var(--shadow-color),  /* t */
+                  1.5px -1px   0 var(--shadow-color),  /* tr */
+                  1.5px  0     0 var(--shadow-color),  /* r */
+                  1.5px  1.5px 0 var(--shadow-color),  /* br */
+                  0      1.5px 0 var(--shadow-color),  /* b */
+                 -1px    1.5px 0 var(--shadow-color),  /* bl */
+                 -1px    0     0 var(--shadow-color),  /* l */
+                 -1px   -1px   0 var(--shadow-color);  /* tl */
 }
 
 #caption {
     position: absolute;
-    top: 0;
+    top: -2px;
     left: 0;
     width: 100vw;
     text-align: center;
 }
     #caption-content {
-        font-size: 2.5vh;
         background: rgba(0, 0, 0, 0.3);
-        padding: 1vh 2vh 0.7vh;
+        background-clip: padding-box;
+        padding: 0.35em 1em 0.2em;
         display: inline-block;
-        border-radius: 0 0 0.5vh 0.5vh;
+        border-radius: 0 0 0.4em 0.4em;
+        border: 2px solid rgba(0, 0, 0, 0.6);
     }
 
 
@@ -76,7 +83,7 @@ img, video, iframe {
     top: 0;
     height: 100vh;
     line-height: 100vh;
-    font-size: 10vh;
+    font-size: var(--font-size-nav);
     cursor: pointer;
     opacity: 0;
     transition: all 0.1s;
@@ -97,13 +104,13 @@ img, video, iframe {
 #prev {
     left: 0;
     text-align: left;
-    padding-right: 20px;
+    padding-right: 0.3em;
 }
 
 #next {
     right: 0;
     text-align: right;
-    padding-left: 20px;
+    padding-left: 0.3em;
 }
 
 #slides.animate figure {

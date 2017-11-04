@@ -37,7 +37,7 @@ function saveOptions() {
 function setLastSaved() {
     if (options['meta.lastSaved']) {
         const lastSavedElement = document.querySelector('#last-saved');
-        const time = (new Date(options['meta.lastSaved'])).toTimeString();
+        const time = (new Date(options['meta.lastSaved'])).toLocaleString();
         lastSavedElement.textContent = `Last saved at ${time}`;
         lastSavedElement.style.display = 'block';
     }
