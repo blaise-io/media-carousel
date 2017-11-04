@@ -51,7 +51,7 @@ class ImageEmbed extends Image {
         // Exclude thumbnails and other tiny images.
         // http://gph.is/1efSlt9
         return Boolean(
-            this.options['include.images.embed'] &&
+            this.options['include.images'] &&
             this.element.tagName === 'IMG' &&
             this.element.getAttribute('data-mcext-width') *
             this.element.getAttribute('data-mcext-height') > 250 * 250
