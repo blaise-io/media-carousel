@@ -15,9 +15,7 @@
   },
   "browser_action": {
     "browser_style": true,
-    "default_icon": {
-      "64": "icons/64-off.png"
-    }
+    "default_icon": "icons/icon.svg"
   },
   "permissions": [
     "activeTab",

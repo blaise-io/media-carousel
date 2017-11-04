@@ -8,11 +8,11 @@ function updateState(tabId, hasCarousel) {
 
 // Set icon and title.
 function updateIcon(tabId) {
-    const icon = tabsWithCarousel[tabId] ? 'on' : 'off';
+    const icon = tabsWithCarousel[tabId] ? 'close' : 'icon';
     const title = tabsWithCarousel[tabId] ?
         'Close carousel' :
         'Display media on this page in a carousel';
-    browser.browserAction.setIcon({tabId: tabId, path: `icons/64-${icon}.png`});
+    browser.browserAction.setIcon({tabId: tabId, path: `icons/${icon}.svg`});
     browser.browserAction.setTitle({tabId: tabId, title: title});
 }
 
