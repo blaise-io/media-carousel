@@ -42,7 +42,7 @@ class ImageEmbed extends Image {
         // Exclude thumbnails and other tiny images.
         // http://gph.is/1efSlt9
         return Boolean(
-            this.options['include.image.embed'] &&
+            this.options['include.images.embed'] &&
             this.element.tagName === 'IMG' &&
             this.element.getAttribute('data-mcext-width') *
             this.element.getAttribute('data-mcext-height') > 250 * 250
@@ -64,7 +64,7 @@ class ImageLink extends Image {
 
     get canHandle() {
         return Boolean(
-            this.options['include.image.link'] &&
+            this.options['include.images'] &&
             this.element.tagName === 'A' &&
             this.url.match(this.imgExtRegexp)
         );
@@ -85,7 +85,7 @@ class VideoLink extends Base {
 
     get canHandle() {
         return Boolean(
-            this.options['include.video.link'] &&
+            this.options['include.videos'] &&
             this.element.tagName === 'A' &&
             this.url
         );
@@ -154,8 +154,8 @@ class ImgurGifv extends VideoLink {
     get canHandle() {
         return (
             super.canHandle &&
-            this.options['include.video.link'] &&
-            Boolean(this.element.href.match(/imgur\.com\/[\w\d]+.gifv/))
+            this.options['include.videos'] &&
+            Boolean(this.url.match(/imgur\.com\/[\w\d]+.gifv/))
         );
     }
 
@@ -189,7 +189,7 @@ class ImgurAlbum extends Base {
     get canHandle() {
         return Boolean(
             this.element.tagName === 'A' &&
-            this.options['include.image.link'] &&
+            this.options['include.images'] &&
             this.url.match(/imgur\.com\/a\/[\w\d]+/i)
         );
     }

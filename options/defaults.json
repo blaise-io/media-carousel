@@ -1,8 +1,6 @@
 {
-  "include.image.embed": true,
-  "include.image.link": true,
-  "include.video.embed": true,
-  "include.video.link": true,
+  "include.images": true,
+  "include.videos": true,
   "video.muted": false,
   "video.controls": true,
   "video.autoplay": true,
