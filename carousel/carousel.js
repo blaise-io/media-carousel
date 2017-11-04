@@ -1,10 +1,4 @@
 /**
- * TODO, MVP:
- * YouTube link plugin
- * Video plugin
- * Test if options sync works across devices
- * Extension icon [[ ]]
- *
  * TODO, maybe:
  * Embedded video plugin for <video> tags
  * Replace no media alert with HTML
@@ -43,7 +37,7 @@ class Carousel {
             next: document.querySelector('#next'),
             title: document.querySelector('#title'),
             current: document.querySelector('#current'),
-            max: document.querySelector('#max')
+            max: document.querySelector('#max'),
         };
     }
 

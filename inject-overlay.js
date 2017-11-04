@@ -34,7 +34,7 @@
     const promises = [
         defaultOptionsPromise,
         savedOptionsPromise,
-        overlayPromise
+        overlayPromise,
     ];
 
     Promise.all(promises).then((result) => {
@@ -47,7 +47,7 @@
 
         frame.contentWindow.postMessage(JSON.stringify({
             html: getPatchedHTML(),
-            options: options
+            options: options,
         }), '*');
     });
 

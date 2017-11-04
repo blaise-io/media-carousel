@@ -5,10 +5,19 @@ class Base {
         this.options = options;
     }
 
+    get url() {
+        return this.element.href;
+    }
+
     get figure() {
         return document.createElement('figure');
     }
 
+    params(obj) {
+        return Object.entries(obj).map(entries =>
+            entries.map(entry => encodeURIComponent(entry)).join('=')
+        ).join('&');
+    }
 }
 
 
@@ -131,7 +140,7 @@ class GfyCat extends VideoLink {
         video.poster = `https://thumbs.gfycat.com/${this.gfy}-poster.jpg`;
 
         // Gfycat uses a limited set of hostnames for content.
-        // TODO: Implement API to get video URL instead of trying all hosts.
+        // TODO: Implement API to get video URL instead of adding all hosts.
         ['zippy', 'fat', 'giant'].forEach((bucket) => {
             const source = this.source;
             source.src = `https://${bucket}.gfycat.com/${this.gfy}.mp4`;
@@ -144,7 +153,7 @@ class GfyCat extends VideoLink {
     }
 
     get gfy() {
-        return this.element.href.split('/').reverse()[0];
+        return this.element.href.split('/').reverse()[0].split(/[^\w]/)[0];
     }
 }
 
@@ -182,10 +191,6 @@ class ImgurGifv extends VideoLink {
 
 class ImgurAlbum extends Base {
 
-    get url() {
-        return this.element.href;
-    }
-
     get canHandle() {
         return Boolean(
             this.element.tagName === 'A' &&
@@ -200,8 +205,8 @@ class ImgurAlbum extends Base {
 
     get node() {
         const frame = document.createElement('iframe');
-        frame.src = `https://imgur.com/a/${this.imgurid}/embed?pub=true&` +
-                    `ref=${encodeURIComponent(this.url)}`;
+        const params = this.params({pub: 'true', ref: this.url});
+        frame.src = `https://imgur.com/a/${this.imgurid}/embed?${params}`;
         frame.height = Math.min(window.innerHeight * 0.9, 768);
         frame.width = Math.min(window.innerWidth * 0.8, 1024);
         frame.overflow = 'scroll';
@@ -217,10 +222,64 @@ class ImgurAlbum extends Base {
     }
 }
 
+
+class YouTubeLink extends Base {
+
+    get canHandle() {
+        return Boolean(
+            this.element.tagName === 'A' &&
+            this.options['include.videos'] &&
+            this.url.match(this.regexp)
+        );
+    }
+
+    get title() {
+        return this.element.title || this.element.textContent;
+    }
+
+    get node() {
+        // https://developers.google.com/youtube/player_parameters#Parameters
+        const frame = document.createElement('iframe');
+        const options = {
+            autoplay: Number(this.options['video.autoplay']),
+            controls: Number(this.options['video.controls']),
+            mute: Number(this.options['video.muted']),
+            modestbranding: 1,  // No logo
+            disablekb: 1,       // No keyboard (conflicts with carousel keys)
+            rel: 0,             // No related videos
+            showinfo: 0,        // No video title / uploader
+            iv_load_policy: 3,  // Disable video annotations
+        };
+        if (this.options['video.loop']) {
+            options.loop = 1;
+            options.playlist = this.ytid;
+        }
+        const params = this.params(options);
+        frame.src = `https://www.youtube.com/embed/${this.ytid}?${params}`;
+        frame.height = '100%';
+        frame.width = '100%';
+
+        const figure = this.figure;
+        figure.appendChild(frame);
+
+        return figure;
+    }
+
+    get regexp() {
+        return /:\/\/(?:www\.)?youtu(?:be\.com|\.be).*(?:\/|v=)([\w]{11})/i;
+    }
+
+    get ytid() {
+        return this.url.match(this.regexp)[1];
+    }
+}
+
+
 window.PLUGINS = [
     ImageEmbed,
     ImageLink,
     GfyCat,
     ImgurGifv,
-    ImgurAlbum
+    ImgurAlbum,
+    YouTubeLink,
 ];

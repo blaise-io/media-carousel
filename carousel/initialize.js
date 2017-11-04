@@ -1,4 +1,4 @@
-(function () {
+(function() {
     window.addEventListener('message', handleMessage);
 
     function handleMessage(event) {
