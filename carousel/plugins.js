@@ -1,3 +1,13 @@
+/**
+ * TODO, maybe:
+ * Embedded video plugin for <video> tags
+ * Async plugins
+ * Use API for Imgur albums
+ * Gfycat lowercase
+ * Vimeo link plugin
+ * Handle hosts preventing hotlinking
+ */
+
 class Base {
 
     constructor(element, options) {
@@ -130,7 +140,7 @@ class GfyCat extends VideoLink {
     get canHandle() {
         return (
             super.canHandle &&
-            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[\w]+/i))
+            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[A-Z][\w]+/i))
         );
     }
 

@@ -43,8 +43,9 @@
 
         chrome.runtime.sendMessage({action: 'open'});
         addMessageListener(frame);
-        setBlur(frame, true);
+        toggleHostStyle(frame, true);
 
+        frame.contentWindow.focus();
         frame.contentWindow.postMessage(JSON.stringify({
             html: getPatchedHTML(),
             options: options,
@@ -65,7 +66,7 @@
             }
 
             if (data.close) {
-                setBlur(frame, false);
+                toggleHostStyle(frame, false);
                 document.documentElement.removeChild(frame);
                 // Notify background.js, which handles the toolbar button.
                 chrome.runtime.sendMessage({action: 'close'});
@@ -91,7 +92,8 @@
         return element.innerHTML;
     }
 
-    function setBlur(frame, enable) {
+    function toggleHostStyle(frame, enable) {
+        frame.parentNode.style.overflow = enable ? 'hidden' : '';
         frame.parentNode.childNodes.forEach((element) => {
             if (element && element !== frame && element.offsetWidth) {
                 element.style.filter = enable ? 'blur(1px)' : '';

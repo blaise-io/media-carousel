@@ -1,16 +1,9 @@
 /**
  * TODO, maybe:
- * Embedded video plugin for <video> tags
  * Replace no media alert with HTML
- * Steal focus from host page
  * Design "No media" message
  * Zoom indicator and click to real-size / scroll
  * Preload multiple slides
- * Async plugins
- * Imgur albums using API
- * Vimeo link plugin
- * Hotlink workaround (e.g. Twitter)
- * Prevent parent scroll
  */
 
 class Carousel {
