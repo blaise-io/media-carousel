@@ -83,9 +83,9 @@ img, video, iframe {
     width: 10vw;
     max-width: 80px;
     position: absolute;
-    top: 0;
-    height: 100vh;
-    line-height: 100vh;
+    top: 30vh; /* Don't span entire height because it may cover embedded UI */
+    height: 40vh;
+    line-height: 40vh;
     font-size: var(--font-size-nav);
     cursor: pointer;
     opacity: 0;

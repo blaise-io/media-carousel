@@ -1,10 +1,12 @@
 /**
  * TODO, maybe:
- * Embedded video plugin for <video> tags
+ * Delay playback of videos until slide is visible
+ * Preload more content
  * Async plugins
- * Use API for Imgur albums
- * Gfycat lowercase
- * Vimeo link plugin
+ * Use Imgur API for albums
+ * Use Gfycat API for video URL
+ * Embedded video plugin for <video> tags
+ * Vimeo API to control volume so we can respect "muted" option
  * Handle hosts preventing hotlinking
  */
 
@@ -21,12 +23,6 @@ class Base {
 
     get figure() {
         return document.createElement('figure');
-    }
-
-    params(obj) {
-        return Object.entries(obj).map(entries =>
-            entries.map(entry => encodeURIComponent(entry)).join('=')
-        ).join('&');
     }
 }
 
@@ -140,20 +136,18 @@ class GfyCat extends VideoLink {
     get canHandle() {
         return (
             super.canHandle &&
-            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[A-Z][\w]+/i))
+            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[A-Z][\w]+/))
         );
     }
 
     get node() {
         const figure = this.figure;
         const video = this.video;
-        video.poster = `https://thumbs.gfycat.com/${this.gfy}-poster.jpg`;
+        video.poster = `https://thumbs.gfycat.com/${this.gfyId}-poster.jpg`;
 
-        // Gfycat uses a limited set of hostnames for content.
-        // TODO: Implement API to get video URL instead of adding all hosts.
         ['zippy', 'fat', 'giant'].forEach((bucket) => {
             const source = this.source;
-            source.src = `https://${bucket}.gfycat.com/${this.gfy}.mp4`;
+            source.src = `https://${bucket}.gfycat.com/${this.gfyId}.mp4`;
             video.appendChild(source);
         });
 
@@ -162,7 +156,7 @@ class GfyCat extends VideoLink {
         return figure;
     }
 
-    get gfy() {
+    get gfyId() {
         return this.element.href.split('/').reverse()[0].split(/[^\w]/)[0];
     }
 }
@@ -182,10 +176,10 @@ class ImgurGifv extends VideoLink {
         const figure = this.figure;
 
         const video = this.video;
-        video.poster = `https://i.imgur.com/${this.imgurid}h.jpg`;
+        video.poster = `https://i.imgur.com/${this.imgurId}h.jpg`;
 
         const source = this.source;
-        source.src = `https://i.imgur.com/${this.imgurid}.mp4`;
+        source.src = `https://i.imgur.com/${this.imgurId}.mp4`;
         video.appendChild(source);
 
         figure.appendChild(video);
@@ -193,13 +187,39 @@ class ImgurGifv extends VideoLink {
         return figure;
     }
 
-    get imgurid() {
+    get imgurId() {
         return this.element.href.match(/imgur\.com\/([\w\d]+).gifv/i)[1];
     }
 }
 
 
-class ImgurAlbum extends Base {
+class FrameEmbed extends Base {
+
+    get frame() {
+        const frame = document.createElement('iframe');
+        frame.height = '100%';
+        frame.width = '100%';
+        frame.overflow = 'scroll';
+        frame.frameBorder = '0';
+        return frame;
+    }
+
+    get node() {
+        const figure = this.figure;
+        figure.appendChild(this.frame);
+        return figure;
+    }
+
+    queryParams(obj) {
+        return Object.entries(obj).map(entries =>
+            entries.map(entry => encodeURIComponent(entry)).join('=')
+        ).join('&');
+    }
+
+}
+
+
+class ImgurAlbum extends FrameEmbed {
 
     get canHandle() {
         return Boolean(
@@ -213,18 +233,14 @@ class ImgurAlbum extends Base {
         return this.element.title || this.element.textContent;
     }
 
-    get node() {
-        const frame = document.createElement('iframe');
-        const params = this.params({pub: 'true', ref: this.url});
+    get frame() {
+        const frame = super.frame;
+        const params = this.queryParams({pub: 'true', ref: this.url});
         frame.src = `https://imgur.com/a/${this.imgurid}/embed?${params}`;
-        frame.height = Math.min(window.innerHeight * 0.9, 768);
-        frame.width = Math.min(window.innerWidth * 0.8, 1024);
+        // Keep Imgur controls accessible:
+        frame.width = '90%';
         frame.overflow = 'scroll';
-
-        const figure = this.figure;
-        figure.appendChild(frame);
-
-        return figure;
+        return frame;
     }
 
     get imgurid() {
@@ -233,7 +249,7 @@ class ImgurAlbum extends Base {
 }
 
 
-class YouTubeLink extends Base {
+class YouTubeLink extends FrameEmbed {
 
     get canHandle() {
         return Boolean(
@@ -247,9 +263,8 @@ class YouTubeLink extends Base {
         return this.element.title || this.element.textContent;
     }
 
-    get node() {
+    get frame() {
         // https://developers.google.com/youtube/player_parameters#Parameters
-        const frame = document.createElement('iframe');
         const options = {
             autoplay: Number(this.options['video.autoplay']),
             controls: Number(this.options['video.controls']),
@@ -262,24 +277,58 @@ class YouTubeLink extends Base {
         };
         if (this.options['video.loop']) {
             options.loop = 1;
-            options.playlist = this.ytid;
+            options.playlist = this.youTubeId;
         }
-        const params = this.params(options);
-        frame.src = `https://www.youtube.com/embed/${this.ytid}?${params}`;
-        frame.height = '100%';
-        frame.width = '100%';
-
-        const figure = this.figure;
-        figure.appendChild(frame);
-
-        return figure;
+        const params = this.queryParams(options);
+        const frame = super.frame;
+        frame.src = `https://www.youtube.com/embed/${this.youTubeId}?${params}`;
+        return frame;
     }
 
     get regexp() {
         return /:\/\/(?:www\.)?youtu(?:be\.com|\.be).*(?:\/|v=)([\w]{11})/i;
     }
 
-    get ytid() {
+    get youTubeId() {
+        return this.url.match(this.regexp)[1];
+    }
+}
+
+
+class VimeoLink extends FrameEmbed {
+
+    get canHandle() {
+        return Boolean(
+            this.element.tagName === 'A' &&
+            this.options['include.videos'] &&
+            this.url.match(this.regexp)
+        );
+    }
+
+    get title() {
+        return this.element.title || this.element.textContent;
+    }
+
+    get frame() {
+        const frame = super.frame;
+        const options = {
+            autopause: 0,
+            byline: 0,
+            title: 0,
+            autoplay: Number(this.options['video.autoplay']),
+            loop: Number(this.options['video.loop']),
+            // Controls and sound cannot be controlled.
+        };
+        const params = this.queryParams(options);
+        frame.src = `https://player.vimeo.com/video/${this.vimeoId}?${params}`;
+        return frame;
+    }
+
+    get regexp() {
+        return /https:\/\/vimeo\.com\/([\d]{9})/i;
+    }
+
+    get vimeoId() {
         return this.url.match(this.regexp)[1];
     }
 }
@@ -292,4 +341,5 @@ window.PLUGINS = [
     ImgurGifv,
     ImgurAlbum,
     YouTubeLink,
+    VimeoLink,
 ];
