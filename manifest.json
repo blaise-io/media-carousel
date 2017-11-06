@@ -1,13 +1,8 @@
 {
-  "applications": {
-    "gecko": {
-      "id": "media-carousel@blaise.io"
-    }
-  },
   "manifest_version": 2,
   "name": "Media Carousel",
-  "version": "0.1.0",
-  "description": "Collects all embedded and linked media of the current page and displays this content in a carousel.",
+  "version": "1.0.0b",
+  "description": "Displays all embedded and linked media on the current page in a carousel.",
   "background": {
     "scripts": [
       "background.js"
@@ -22,10 +17,14 @@
     "storage"
   ],
   "web_accessible_resources": [
-    "inject-overlay.js",
     "carousel/*"
   ],
   "options_ui": {
     "page": "options/options.html"
+  },
+  "applications": {
+    "gecko": {
+      "id": "media-carousel@blaise.io"
+    }
   }
 }

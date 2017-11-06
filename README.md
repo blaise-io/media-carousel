@@ -1,5 +1,5 @@
-# Media Carousel browser extension
+# Media Carousel
 
-## Work in progress
+Displays all embedded and linked media on the current page in a carousel.
 
-Collects all embedded and linked media of the current page and displays this content in a carousel.
+[Download as Firefox extension](https://addons.mozilla.org/addon/media-carousel/)
