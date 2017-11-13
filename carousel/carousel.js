@@ -60,7 +60,13 @@ class Carousel {
         const newCurrent = this.current + delta;
         const direction = delta === 1 ? 'left' : 'right';
 
-        if (this.animating || newCurrent === -1 || newCurrent === this.max) {
+        if (this.animating) {
+            return;
+        } else if (newCurrent === -1) {
+            this.flashNav(this.dom.prev);
+            return;
+        } else if (newCurrent === this.max) {
+            this.flashNav(this.dom.next);
             return;
         }
 
@@ -90,6 +96,11 @@ class Carousel {
             this.setTitle();
             this.updateNav();
         }, 200);
+    }
+
+    flashNav(element) {
+        element.classList.add('flash');
+        window.setTimeout(() => element.classList.remove('flash'), 400);
     }
 
     get dummySlide() {

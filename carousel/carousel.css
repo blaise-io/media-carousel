@@ -98,9 +98,20 @@ img, video, iframe {
     opacity: 1;
 }
 
-.nav.disabled {
+.nav.disabled,
+.nav.disabled:hover {
     pointer-events: none;
-    opacity: 0 !important;
+    opacity: 0;
+    color: red;
+}
+
+@keyframes flash {
+      0% { opacity: 0; }
+     50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+.nav.disabled.flash {
+    animation: flash 400ms cubic-bezier(0.3, 1, 0.3, 1);
 }
 
 
