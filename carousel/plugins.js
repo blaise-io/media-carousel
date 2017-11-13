@@ -10,8 +10,50 @@
  * Handle hosts preventing hotlinking
  */
 
-class Base {
 
+class EmbedTitle {
+    constructor(element) {
+        this.element = element;
+    }
+
+    get titleFromFigcaption() {
+        const caption = (
+            this.element.querySelector('figcaption') ||
+            this.element.closest('figcaption')
+        );
+        return caption && caption.textContent;
+    }
+
+    get titleFromDataAttrib() {
+        for (let i = 0, m = this.element.attributes.length; i < m; i++) {
+            const attrib = this.element.attributes[i];
+            const isTitleAttrib = attrib.name.match(/^data-.*(title|caption)/);
+            const isUrl = attrib.value.match(/^https?:\/\//);
+            if (isTitleAttrib && !isUrl) {
+                return attrib.value;
+            }
+        }
+    }
+
+    get title() {
+        return (
+            this.element.title ||
+            this.element.alt ||
+            this.titleFromDataAttrib ||
+            this.titleFromFigcaption
+        );
+    }
+}
+
+
+class LinkTitle {
+    constructor(element) {
+        this.title = element.title || element.textContent;
+    }
+}
+
+
+class Base {
     constructor(element, options) {
         this.element = element;
         this.options = options;
@@ -23,6 +65,15 @@ class Base {
 
     get figure() {
         return document.createElement('figure');
+    }
+
+    get titleClass() {
+        return EmbedTitle;
+    }
+
+    get title() {
+        const TitleClass = this.titleClass;
+        return new TitleClass(this.element).title;
     }
 }
 
@@ -48,7 +99,6 @@ class Image extends Base {
 
 
 class ImageEmbed extends Image {
-
     get url() {
         return this.element.src;
     }
@@ -63,15 +113,13 @@ class ImageEmbed extends Image {
             this.element.getAttribute('data-mcext-height') > 250 * 250
         );
     }
-
-    get title() {
-        return this.element.title || this.element.alt;
-    }
-
 }
 
 
 class ImageLink extends Image {
+    get titleClass() {
+        return LinkTitle;
+    }
 
     get url() {
         return this.element.href;
@@ -84,16 +132,10 @@ class ImageLink extends Image {
             this.url.match(this.imgExtRegexp)
         );
     }
-
-    get title() {
-        return this.element.title || this.element.textContent;
-    }
-
 }
 
 
 class VideoLink extends Base {
-
     get url() {
         return this.element.href;
     }
@@ -127,12 +169,10 @@ class VideoLink extends Base {
     get title() {
         return this.element.title || this.element.textContent;
     }
-
 }
 
 
 class GfyCat extends VideoLink {
-
     get canHandle() {
         return (
             super.canHandle &&
@@ -163,7 +203,6 @@ class GfyCat extends VideoLink {
 
 
 class ImgurGifv extends VideoLink {
-
     get canHandle() {
         return (
             super.canHandle &&
@@ -194,7 +233,6 @@ class ImgurGifv extends VideoLink {
 
 
 class FrameEmbed extends Base {
-
     get frame() {
         const frame = document.createElement('iframe');
         frame.height = '100%';
@@ -202,6 +240,10 @@ class FrameEmbed extends Base {
         frame.overflow = 'scroll';
         frame.frameBorder = '0';
         return frame;
+    }
+
+    get titleClass() {
+        return LinkTitle;
     }
 
     get node() {
@@ -215,12 +257,10 @@ class FrameEmbed extends Base {
             entries.map(entry => encodeURIComponent(entry)).join('=')
         ).join('&');
     }
-
 }
 
 
 class ImgurAlbum extends FrameEmbed {
-
     get canHandle() {
         return Boolean(
             this.element.tagName === 'A' &&
@@ -229,16 +269,14 @@ class ImgurAlbum extends FrameEmbed {
         );
     }
 
-    get title() {
-        return this.element.title || this.element.textContent;
-    }
-
     get frame() {
         const frame = super.frame;
         const params = this.queryParams({pub: 'true', ref: this.url});
         frame.src = `https://imgur.com/a/${this.imgurid}/embed?${params}`;
         // Keep Imgur controls accessible:
         frame.width = '90%';
+        // Allow scrolling because imgur sizes images
+        // inside the frame in an unpredictable way.
         frame.overflow = 'scroll';
         return frame;
     }
@@ -250,17 +288,12 @@ class ImgurAlbum extends FrameEmbed {
 
 
 class YouTubeLink extends FrameEmbed {
-
     get canHandle() {
         return Boolean(
             this.element.tagName === 'A' &&
             this.options['include.videos'] &&
             this.url.match(this.regexp)
         );
-    }
-
-    get title() {
-        return this.element.title || this.element.textContent;
     }
 
     get frame() {
@@ -296,17 +329,12 @@ class YouTubeLink extends FrameEmbed {
 
 
 class VimeoLink extends FrameEmbed {
-
     get canHandle() {
         return Boolean(
             this.element.tagName === 'A' &&
             this.options['include.videos'] &&
             this.url.match(this.regexp)
         );
-    }
-
-    get title() {
-        return this.element.title || this.element.textContent;
     }
 
     get frame() {
@@ -334,6 +362,40 @@ class VimeoLink extends FrameEmbed {
 }
 
 
+class StreamableLink extends FrameEmbed {
+    get canHandle() {
+        return Boolean(
+            this.element.tagName === 'A' &&
+            this.options['include.videos'] &&
+            this.url.match(this.regexp)
+        );
+    }
+
+    get frame() {
+        const frame = super.frame;
+        const options = {
+            autopause: 0,
+            byline: 0,
+            title: 0,
+            autoplay: Number(this.options['video.autoplay']),
+            loop: Number(this.options['video.loop']),
+            controls: Number(this.options['video.controls']),
+        };
+        const params = this.queryParams(options);
+        frame.src = `https://streamable.com/s/${this.streamableId}?${params}`;
+        return frame;
+    }
+
+    get regexp() {
+        return /https:\/\/streamable\.com\/([^/]+)/i;
+    }
+
+    get streamableId() {
+        return this.url.match(this.regexp)[1];
+    }
+}
+
+
 window.PLUGINS = [
     ImageEmbed,
     ImageLink,
@@ -342,4 +404,5 @@ window.PLUGINS = [
     ImgurAlbum,
     YouTubeLink,
     VimeoLink,
+    StreamableLink,
 ];
