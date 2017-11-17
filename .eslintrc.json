@@ -5,6 +5,7 @@
     "es6": true
   },
   "rules": {
+    "arrow-parens": [2, "always"],
     "no-console": 2,
     "no-debugger": 2,
     "no-trailing-spaces": 2,

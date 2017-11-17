@@ -253,8 +253,8 @@ class FrameEmbed extends Base {
     }
 
     queryParams(obj) {
-        return Object.entries(obj).map(entries =>
-            entries.map(entry => encodeURIComponent(entry)).join('=')
+        return Object.entries(obj).map((entries) =>
+            entries.map((entry) => encodeURIComponent(entry)).join('=')
         ).join('&');
     }
 }

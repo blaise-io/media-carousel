@@ -2,15 +2,9 @@ document.addEventListener('input', saveOptions);
 
 let options = {};
 
-const defaultOptionsPromise = new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', browser.extension.getURL('options/defaults.json'));
-    xhr.overrideMimeType('application/json');
-    xhr.send(null);
-    xhr.onload = () => {
-        resolve(JSON.parse(xhr.response));
-    };
-});
+const defaultOptionsPromise = fetch(
+    browser.extension.getURL('options/defaults.json')
+).then((response) => response.json());
 
 const savedOptionsPromise = browser.storage.sync.get('options');
 
