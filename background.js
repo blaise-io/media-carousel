@@ -9,9 +9,10 @@ function updateState(tabId, hasCarousel) {
 // Set icon and title.
 function updateIcon(tabId) {
     const icon = tabsWithCarousel[tabId] ? 'close' : 'icon';
+    const modifierKey = navigator.platform.match(/^mac/i) ? 'Cmd' : 'Ctrl';
     const title = tabsWithCarousel[tabId] ?
         'Close carousel (Esc)' :
-        'Display media on this page in a carousel';
+        `Display media on this page in a carousel (${modifierKey}+Shift+M)`;
     browser.browserAction.setIcon({tabId: tabId, path: `icons/${icon}.svg`});
     browser.browserAction.setTitle({tabId: tabId, title: title});
 }

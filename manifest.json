@@ -12,6 +12,16 @@
     "browser_style": true,
     "default_icon": "icons/icon.svg"
   },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+M",
+        "windows": "Ctrl+Shift+M",
+        "linux": "Ctrl+Shift+M",
+        "mac": "Command+Shift+M"
+      }
+    }
+  },
   "permissions": [
     "activeTab",
     "storage"
