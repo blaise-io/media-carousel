@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Media Carousel",
-  "version": "1.0.0b2",
+  "version": "1.0.0",
   "description": "Displays all embedded and linked media on the current page in a carousel.",
   "background": {
     "scripts": [
