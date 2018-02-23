@@ -35,7 +35,7 @@
         const options = Object.assign(result[0], result[1].options);
         const frame = result[2];
 
-        chrome.runtime.sendMessage({action: 'open'});
+        browser.runtime.sendMessage({action: 'open'});
         addMessageListener(frame);
         toggleHostStyle(frame, true);
 
@@ -63,7 +63,7 @@
                 toggleHostStyle(frame, false);
                 document.documentElement.removeChild(frame);
                 // Notify background.js, which handles the toolbar button.
-                chrome.runtime.sendMessage({action: 'close'});
+                browser.runtime.sendMessage({action: 'close'});
             }
         });
     }

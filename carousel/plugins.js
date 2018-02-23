@@ -110,7 +110,7 @@ class ImageEmbed extends Image {
             width > 120 &&  // Attempt to exclude skyscraper ads
             height > 90 &&  // Attempt to exclude banner ads
             width * height > 250 * 250  // Exclude small images
-        )
+        );
     }
 
     get canHandle() {

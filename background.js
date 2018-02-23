@@ -38,7 +38,7 @@ browser.browserAction.onClicked.addListener((tab) => {
     );
 
     // Handle carousel reporting open/closed.
-    chrome.runtime.onMessage.addListener((message, sender) => {
+    browser.runtime.onMessage.addListener((message, sender) => {
         if (sender.tab.id === tab.id) {
             if (message.action === 'open') {
                 updateState(tab.id, true);
