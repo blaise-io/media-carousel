@@ -1,9 +1,9 @@
-document.addEventListener('input', saveOptions);
+document.addEventListener('change', saveOptions, false);
 
 let options = {};
 
 const defaultOptionsPromise = fetch(
-    browser.extension.getURL('options/defaults.json')
+    browser.extension.getURL('/options/defaults.json')
 ).then((response) => response.json());
 
 const savedOptionsPromise = browser.storage.sync.get('options');

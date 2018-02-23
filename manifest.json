@@ -5,12 +5,12 @@
   "description": "Displays all embedded and linked media on the current page in a carousel.",
   "background": {
     "scripts": [
-      "background.js"
+      "/background.js"
     ]
   },
   "browser_action": {
     "browser_style": true,
-    "default_icon": "icons/icon.svg"
+    "default_icon": "/icons/icon.svg"
   },
   "commands": {
     "_execute_browser_action": {
@@ -27,10 +27,11 @@
     "storage"
   ],
   "web_accessible_resources": [
-    "carousel/*"
+    "/carousel/*",
+    "/options/*"
   ],
   "options_ui": {
-    "page": "options/options.html"
+    "page": "/options/options.html"
   },
   "applications": {
     "gecko": {

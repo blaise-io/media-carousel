@@ -74,27 +74,32 @@ class Carousel {
         this.animating = true;
 
         window.setTimeout(() => {
+            // Set essentials
             this.current = newCurrent;
-            this.dom.slides.classList.remove('animate');
-            this.dom.slides.classList.remove(direction);
             this.animating = false;
-
-            // Navigated to next slide:
-            // Add a new upcoming slide and remove the former previous slide.
-            if (delta === 1) {
-                this.appendSlideWithIndex(newCurrent + 1);
-                this.removeSlideAtPosition(0);
-            }
-
-            // Navigated to previous slide:
-            // Add a new previous slide and remove the former next slide.
-            else if (delta === -1) {
-                this.removeSlideAtPosition(2);
-                this.prependSlideWithIndex(newCurrent - 1);
-            }
-
             this.setTitle();
             this.updateNav();
+
+            // Animating can come later when user wants to scroll hard.
+            window.setTimeout(() => {
+                this.dom.slides.classList.remove('animate');
+                this.dom.slides.classList.remove(direction);
+
+                // Navigated to next slide:
+                // Add a new upcoming slide and remove the former previous slide.
+                if (delta === 1) {
+                    this.appendSlideWithIndex(newCurrent + 1);
+                    this.removeSlideAtPosition(0);
+                }
+
+                // Navigated to previous slide:
+                // Add a new previous slide and remove the former next slide.
+                else if (delta === -1) {
+                    this.removeSlideAtPosition(2);
+                    this.prependSlideWithIndex(newCurrent - 1);
+                }
+            }, 400);
+
         }, 200);
     }
 
@@ -130,7 +135,6 @@ class Carousel {
     setTitle() {
         this.dom.current.textContent = String(this.current + 1);
         this.dom.max.textContent = String(this.max);
-        // TODO: Find safer way to display html entities.
         this.dom.title.innerHTML = this.slides[this.current].title;
     }
 

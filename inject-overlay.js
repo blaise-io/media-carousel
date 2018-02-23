@@ -4,7 +4,7 @@
     // Create new scope every time toolbar button is clicked.
 
     const defaultOptionsPromise = fetch(
-        browser.extension.getURL('options/defaults.json')
+        browser.extension.getURL('/options/defaults.json')
     ).then((response) => response.json());
 
     const savedOptionsPromise = browser.storage.sync.get('options');
@@ -18,7 +18,7 @@
         frame.style.top = '0';
         frame.style.border = 'none';
         frame.style.zIndex = Math.pow(2, 24).toString();
-        frame.src = browser.extension.getURL('carousel/carousel.html');
+        frame.src = browser.extension.getURL('/carousel/carousel.html');
         frame.addEventListener('load', () => {
             resolve(frame);
         });
