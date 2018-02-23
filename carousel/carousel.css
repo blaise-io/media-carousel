@@ -5,9 +5,9 @@
 }
 
 :root {
-    --font-size-text: 20px;
+    --font-size-text: 16px;
     --shadow-color: rgba(0, 0, 0, 0.4);
-    --font-size-nav: 90px;
+    --font-size-nav: 60px;
 }
 
 
@@ -53,7 +53,7 @@ img, video, iframe {
 
 #caption {
     position: absolute;
-    top: -2px;
+    top: 0;
     left: 0;
     width: 100vw;
     text-align: center;
@@ -61,23 +61,21 @@ img, video, iframe {
     line-height: 2em;
 }
     #caption-content {
-        display: inline-block;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        width: calc(100vw - 50px);
+        text-overflow: ellipsis;
+        padding: 0 5px;
     }
-
-
-#position {
-    margin-right: 5px;
-    color: #aaa;
-}
-
-#current {
-    color: #fff;
-}
-
-#current, #max {
-    padding: 0 0.05em;
-    font-weight: 500;
-}
+    #position {
+        position: absolute;
+        right: 8px;
+    }
+    #current, #max {
+        padding: 0 0.05em;
+        font-weight: 500;
+    }
 
 .nav {
     width: 10vw;
