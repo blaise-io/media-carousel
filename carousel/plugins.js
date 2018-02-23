@@ -103,14 +103,23 @@ class ImageEmbed extends Image {
         return this.element.src;
     }
 
+    get hasMinimalSize() {
+        const width = this.element.getAttribute('data-mcext-width');
+        const height = this.element.getAttribute('data-mcext-height');
+        return (
+            width > 120 &&  // Attempt to exclude skyscraper ads
+            height > 90 &&  // Attempt to exclude banner ads
+            width * height > 250 * 250  // Exclude small images
+        )
+    }
+
     get canHandle() {
         // Exclude thumbnails and other tiny images.
         // http://gph.is/1efSlt9
         return Boolean(
             this.options['include.images'] &&
             this.element.tagName === 'IMG' &&
-            this.element.getAttribute('data-mcext-width') *
-            this.element.getAttribute('data-mcext-height') > 250 * 250
+            this.hasMinimalSize
         );
     }
 }
