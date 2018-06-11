@@ -2,6 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <title>Media Carousel options</title>
+    <style>
+        <% _(htmlWebpackPlugin.files.css).each(function(f) { %><%= compilation.assets[f].source() %><% }) %>
+    </style>
 </head>
 <body>
     <div><label><input type="checkbox" name="include.images"> Include images</label></div>
@@ -11,6 +15,8 @@
     <div><label><input type="checkbox" name="video.autoplay"> Autoplay videos</label></div>
     <div><label><input type="checkbox" name="video.loop"> Loop video playback</label></div>
     <p id="last-saved" style="display:none"></p>
-    <script src="/options/options.js"></script>
+    <script>
+        <% _(htmlWebpackPlugin.files.js).each(function(f) { %><%= compilation.assets[f].source() %><% }) %>
+    </script>
 </body>
 </html>

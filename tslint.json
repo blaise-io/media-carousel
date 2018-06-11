@@ -1,0 +1,19 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:latest"
+    ],
+    "rules": {
+        "no-any": true,
+        "trailing-comma": [
+            true,
+            {
+                "objects": "always",
+                "arrays": "always",
+                "functions": "never",
+                "typeLiterals": "never"
+            }
+        ]
+    },
+    "rulesDirectory": []
+}

@@ -1,8 +1,0 @@
-{
-  "include.images": true,
-  "include.videos": true,
-  "video.muted": false,
-  "video.controls": true,
-  "video.autoplay": true,
-  "video.loop": true
-}
