@@ -23,7 +23,7 @@
         <div id="next" class="nav text-shadow" title="Next (▶)">〉</div>
     </div>
     <script>
-        <% _(htmlWebpackPlugin.files.js).each(function(f) { %><%= compilation.assets[f].source() %><%_ }) %>
+        <% _(htmlWebpackPlugin.files.js).each(function(f) { %><%= compilation.assets[f].source() %><% }) %>
     </script>
 </body>
 </html>

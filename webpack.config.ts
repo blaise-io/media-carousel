@@ -33,13 +33,13 @@ const config: Configuration = {
             inject: false,
             chunks: ["carousel"],
             filename: "carousel.html",
-            template: resolve(__dirname, "app/carousel/carousel.html"),
+            template: resolve(__dirname, "app/carousel/carousel.ejs"),
         }),
         new HtmlWebpackPlugin({
             inject: false,
             chunks: ["options"],
             filename: "options.html",
-            template: resolve(__dirname, "app/options/options.html"),
+            template: resolve(__dirname, "app/options/options.ejs"),
         })
     ],
     resolve: {
