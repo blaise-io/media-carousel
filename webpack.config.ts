@@ -1,5 +1,3 @@
-/* eslint-env node */
-
 import * as CleanWebpackPlugin from "clean-webpack-plugin";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import {resolve} from "path";
