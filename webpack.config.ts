@@ -3,12 +3,18 @@ import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import {resolve} from "path";
 import {Configuration, DefinePlugin} from "webpack";
 
+function polyfill(asset) {
+    return (process.env.BROWSER === "chrome") ?
+        ["webextension-polyfill/dist/browser-polyfill.js", asset] :
+        [asset];
+}
+
 const config: Configuration = {
     entry: {
-        background: resolve(__dirname, "app/background.ts"),
+        background: polyfill(resolve(__dirname, "app/background.ts")),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
-        inject: resolve(__dirname, "app/inject.ts"),
-        options: resolve(__dirname, "app/options/options.ts"),
+        inject: polyfill(resolve(__dirname, "app/inject.ts")),
+        options: polyfill(resolve(__dirname, "app/options/options.ts")),
     },
     module: {
         rules: [{
@@ -28,15 +34,15 @@ const config: Configuration = {
             resolve(`dist/${process.env.BROWSER}`),
         ]),
         new HtmlWebpackPlugin({
-            inject: false,
             chunks: ["carousel"],
             filename: "carousel.html",
+            inject: false,
             template: resolve(__dirname, "app/carousel/carousel.ejs"),
         }),
         new HtmlWebpackPlugin({
-            inject: false,
             chunks: ["options"],
             filename: "options.html",
+            inject: false,
             template: resolve(__dirname, "app/options/options.ejs"),
         })
     ],

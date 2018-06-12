@@ -1,8 +1,17 @@
-export default class EmbedTitle {
-    constructor(public element: HTMLElement) {
+import BaseTitle from "./base";
+
+export default class EmbedTitle extends BaseTitle {
+
+    get title() {
+        return (
+            this.element.title ||
+            this.element.getAttribute("alt") ||
+            this.titleFromDataAttrib ||
+            this.titleFromFigcaption
+        );
     }
 
-    get titleFromFigcaption() {
+    get titleFromFigcaption(): string {
         const caption = (
             this.element.querySelector("figcaption") ||
             this.element.closest("figcaption")
@@ -10,7 +19,7 @@ export default class EmbedTitle {
         return caption && caption.textContent;
     }
 
-    get titleFromDataAttrib() {
+    get titleFromDataAttrib(): string {
         for (let i = 0, m = this.element.attributes.length; i < m; i++) {
             const attrib = this.element.attributes[i];
             const isTitleAttrib = attrib.name.match(/^data-.*(title|caption)/);
@@ -21,12 +30,4 @@ export default class EmbedTitle {
         }
     }
 
-    get title() {
-        return (
-            this.element.title ||
-            this.element.getAttribute("alt") ||
-            this.titleFromDataAttrib ||
-            this.titleFromFigcaption
-        );
-    }
 }

@@ -74,7 +74,7 @@ import defaultOptions from "./options/defaults";
         });
 
         // Make a.href absolute.
-        const links = Array.from(element.querySelectorAll("a[href]"))
+        const links = Array.from(element.querySelectorAll("a[href]"));
         links.forEach((a: HTMLLinkElement) => {
             a.setAttribute("href", a.href);
         });

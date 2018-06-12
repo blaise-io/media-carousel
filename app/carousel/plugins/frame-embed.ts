@@ -11,8 +11,8 @@ export default class FrameEmbed extends Base {
         return frame;
     }
 
-    get titleClass() {
-        return LinkTitle;
+    get title() {
+        return new LinkTitle(this.element).title;
     }
 
     get node() {

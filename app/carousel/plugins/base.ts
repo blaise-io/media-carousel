@@ -1,7 +1,8 @@
+import BaseTitle from "./title/base";
 import EmbedTitle from "./title/embed-title";
 import LinkTitle from "./title/link-title";
 
-export default class Base {
+export default class Base implements BaseTitle {
     constructor(
         public element: HTMLLinkElement & HTMLIFrameElement & HTMLImageElement,
         public options
@@ -19,12 +20,7 @@ export default class Base {
         return null;
     }
 
-    get titleClass(): any {
-        return EmbedTitle;
-    }
-
     get title() {
-        const TitleClass = this.titleClass;
-        return new TitleClass(this.element).title;
+        return new EmbedTitle(this.element).title;
     }
 }

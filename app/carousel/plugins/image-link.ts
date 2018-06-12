@@ -3,8 +3,8 @@ import LinkTitle from "./title/link-title";
 
 export default class ImageLink extends ImageBase {
 
-    get titleClass() {
-        return LinkTitle;
+    get title() {
+        return new LinkTitle(this.element).title;
     }
 
     get url() {

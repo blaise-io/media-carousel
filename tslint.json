@@ -5,6 +5,7 @@
     ],
     "rules": {
         "no-any": true,
+        "semicolon": [true, "always"],
         "trailing-comma": [
             true,
             {
