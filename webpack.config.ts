@@ -1,7 +1,8 @@
 import * as CleanWebpackPlugin from "clean-webpack-plugin";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
-import {resolve} from "path";
-import {Configuration, DefinePlugin} from "webpack";
+import * as MiniCssExtractPlugin from "mini-css-extract-plugin";
+import { resolve } from "path";
+import { Configuration, DefinePlugin } from "webpack";
 
 function polyfill(asset) {
     return (process.env.BROWSER === "chrome") ?
@@ -17,10 +18,22 @@ const config: Configuration = {
         options: polyfill(resolve(__dirname, "app/options/options.ts")),
     },
     module: {
-        rules: [{
-            loader: "ts-loader",
-            test: /\.ts$/,
-        }]
+        rules: [
+            {
+                test: /\.ts$/,
+                use: "ts-loader",
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: "css-loader",
+                        options: { minimize: true }
+                    }
+                ]
+            }
+        ]
     },
     output: {
         filename: "[name].js",
@@ -33,6 +46,10 @@ const config: Configuration = {
         new CleanWebpackPlugin([
             resolve(`dist/${process.env.BROWSER}`),
         ]),
+        new MiniCssExtractPlugin({
+            chunkFilename: "[id].css",
+            filename: "[name].css",
+        }),
         new HtmlWebpackPlugin({
             chunks: ["carousel"],
             filename: "carousel.html",

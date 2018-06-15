@@ -1,3 +1,4 @@
+import "./carousel.css";
 import Base from "./plugins/base";
 
 /**
