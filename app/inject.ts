@@ -13,7 +13,7 @@ import defaultOptions from "./options/defaults";
         frame.style.top = "0";
         frame.style.border = "none";
         frame.style.zIndex = Math.pow(2, 24).toString();
-        frame.src = browser.extension.getURL("/carousel/carousel.html");
+        frame.src = browser.extension.getURL("/carousel.html");
         frame.addEventListener("load", () => {
             resolve(frame);
         });
@@ -26,7 +26,7 @@ import defaultOptions from "./options/defaults";
     ];
 
     Promise.all(promises).then((result) => {
-        const options = {defaultOptions, ...result[0].options};
+        const options = {...defaultOptions, ...result[0].options};
         const frame: HTMLIFrameElement = result[1];
 
         browser.runtime.sendMessage({action: "open"});

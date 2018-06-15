@@ -7,7 +7,7 @@ let options = {};
 const savedOptionsPromise = browser.storage.sync.get("options");
 
 Promise.all([savedOptionsPromise]).then((result) => {
-    options = {...defaultOptions, ...result[1].options};
+    options = {...defaultOptions, ...result[0].options};
     restoreOptions();
     setLastSaved();
 });

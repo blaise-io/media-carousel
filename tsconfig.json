@@ -1,7 +1,18 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
+        "paths": {
+            "generate-json-webpack-plugin": [
+                "node_modules/generate-json-webpack-plugin/index.js"
+            ],
+            "zip-webpack-plugin": [
+                "node_modules/zip-webpack-plugin/index.js"
+            ],
+        },
         "target": "es2017",
-        "lib": [ "dom", "es2017" ]
+        "lib": [
+            "dom",
+            "es2017"
+        ]
     }
 }

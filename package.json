@@ -4,14 +4,13 @@
   "description": "Displays all embedded and linked media on the current page in a carousel.",
   "main": "npm run build",
   "config": {
-    "webpack": "webpack --require ts-node/register --config webpack.config.ts"
+    "webpack": "webpack --devtool inline-source-map --require ts-node/register --config webpack.config.ts"
   },
   "scripts": {
     "build": "npm run firefox.build; npm run chrome.build",
-    "dev": "npm run firefox.dev; npm run chrome.dev",
-    "chrome.dev": "BROWSER=chrome $npm_package_config_webpack --run-dev",
+    "chrome.dev": "BROWSER=chrome $npm_package_config_webpack --watch --run-dev",
     "chrome.build": "BROWSER=chrome $npm_package_config_webpack --run-prod",
-    "firefox.dev": "BROWSER=firefox $npm_package_config_webpack --run-dev",
+    "firefox.dev": "BROWSER=firefox $npm_package_config_webpack --watch --run-dev",
     "firefox.build": "BROWSER=firefox $npm_package_config_webpack --run-prod"
   },
   "repository": {
@@ -34,6 +33,8 @@
     "clean-webpack-plugin": "0.1.19",
     "core-js": "2.5.7",
     "css-loader": "0.28.11",
+    "file-loader": "1.1.11",
+    "generate-json-webpack-plugin": "0.3.1",
     "html-webpack-plugin": "3.2.0",
     "json-loader": "0.5.7",
     "mini-css-extract-plugin": "^0.4.0",
@@ -43,6 +44,7 @@
     "typescript": "2.9.1",
     "webextension-polyfill": "0.2.1",
     "webpack": "4.12.0",
-    "webpack-command": "0.2.1"
+    "webpack-command": "0.2.1",
+    "zip-webpack-plugin": "3.0.0"
   }
 }

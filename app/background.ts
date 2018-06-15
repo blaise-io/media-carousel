@@ -1,3 +1,12 @@
+import closeImage from "./icons/close.svg";
+import iconImageChrome from "./icons/icon.png";
+import iconImage from "./icons/icon.svg";
+
+if (process.env.BROWSER === "chrome") {
+    // tslint:disable-next-line:no-unused-expression
+    iconImageChrome;
+}
+
 const tabsWithCarousel: Record<number, boolean> = {};
 
 // Set state and icon.
@@ -8,12 +17,12 @@ function updateState(tabId: number, hasCarousel: boolean) {
 
 // Set icon and title.
 function updateIcon(tabId: number) {
-    const icon = tabsWithCarousel[tabId] ? "close" : "icon";
+    const path = tabsWithCarousel[tabId] ? closeImage : iconImage;
     const modifierKey = navigator.platform.match(/^mac/i) ? "Cmd" : "Ctrl";
     const title = tabsWithCarousel[tabId] ?
         "Close carousel (Esc)" :
         `Display media on this page in a carousel (${modifierKey}+Shift+M)`;
-    browser.browserAction.setIcon({tabId, path: `icons/${icon}.svg`});
+    browser.browserAction.setIcon({tabId, path});
     browser.browserAction.setTitle({tabId, title});
 }
 
@@ -34,7 +43,7 @@ browser.browserAction.onClicked.addListener((tab) => {
     browser.tabs.executeScript(tab.id,
         tabsWithCarousel[tab.id] ?
             {code: 'window.postMessage(`{"mcext": {"close": true}}`, "*")'} :
-            {file: "/inject-overlay.js"},
+            {file: "/inject.js"},
     );
 
     // Handle carousel reporting open/closed.

@@ -3,12 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>Media Carousel</title>
-    <style><%
-        _(htmlWebpackPlugin.files.css).each((f) => {
-            %><%= compilation.assets[f].source() %><%
-            delete(compilation.assets[f])
-         })
-    %></style>
 </head>
 <body>
     <div id="content">
@@ -24,11 +18,5 @@
         <div id="prev" class="nav text-shadow" title="Previous (◀)">〈</div>
         <div id="next" class="nav text-shadow" title="Next (▶)">〉</div>
     </div>
-    <script><%
-        _(htmlWebpackPlugin.files.js).each((f) => {
-            %><%= compilation.assets[f].source() %><%
-            delete(compilation.assets[f])
-         })
-    %></script>
 </body>
 </html>
