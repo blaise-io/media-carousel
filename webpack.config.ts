@@ -1,4 +1,5 @@
 import * as CleanWebpackPlugin from "clean-webpack-plugin";
+import * as CompressionPlugin from "compression-webpack-plugin";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import * as MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { resolve } from "path";
@@ -12,8 +13,8 @@ function polyfill(asset) {
 
 const config: Configuration = {
     entry: {
-        background: polyfill(resolve(__dirname, "app/background.ts")),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
+        background: polyfill(resolve(__dirname, "app/background.ts")),
         inject: polyfill(resolve(__dirname, "app/inject.ts")),
         options: polyfill(resolve(__dirname, "app/options/options.ts")),
     },

@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "Displays all embedded and linked media on the current page in a carousel.",
   "main": "npm run build",
-  "variables": {
-    "webpack": ""
+  "config": {
+    "webpack": "webpack --require ts-node/register --config webpack.config.ts"
   },
   "scripts": {
-    "build": "",
-    "chrome.dev": "BROWSER=chrome webpack --require ts-node/register --run-dev --config webpack.config.ts",
-    "chrome.build": "BROWSER=chrome webpack --require ts-node/register --run-prod --config webpack.config.ts",
-    "firefox.dev": "BROWSER=firefox webpack --require ts-node/register --run-dev --config webpack.config.ts",
-    "firefox.build": "BROWSER=firefox webpack --require ts-node/register --run-prod --config webpack.config.ts"
+    "build": "npm run firefox.build; npm run chrome.build",
+    "dev": "npm run firefox.dev; npm run chrome.dev",
+    "chrome.dev": "BROWSER=chrome $npm_package_config_webpack --run-dev",
+    "chrome.build": "BROWSER=chrome $npm_package_config_webpack --run-prod",
+    "firefox.dev": "BROWSER=firefox $npm_package_config_webpack --run-dev",
+    "firefox.build": "BROWSER=firefox $npm_package_config_webpack --run-prod"
   },
   "repository": {
     "type": "git",
