@@ -13,8 +13,9 @@ function polyfill(asset) {
 }
 
 const config: webpack.Configuration = {
+    devtool: false,
     entry: {
-        manifest: resolve(__dirname, "app/manifest/index.js"),
+        manifest: resolve(__dirname, "app/manifest/manifest.ts"),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
         background: polyfill(resolve(__dirname, "app/background.ts")),
         inject: polyfill(resolve(__dirname, "app/inject.ts")),
@@ -24,6 +25,7 @@ const config: webpack.Configuration = {
         rules: [
             {
                 test: /\.ts$/,
+                exclude: /manifest\.ts$/,
                 use: "ts-loader",
             },
             {
@@ -37,9 +39,9 @@ const config: webpack.Configuration = {
                 ]
             },
             {
-                test: /index\.js$/,
+                test: /manifest\.ts$/,
                 use: ExtractTextPlugin.extract({
-                    use: []
+                    use: ["ts-loader"]
                 })
             },
             {

@@ -1,3 +1,4 @@
+// Use CommonJS modules for compatibility with ExtractTextPlugin.
 module.exports = {
     manifest_version: 2,
     name: "Media Carousel",
@@ -8,8 +9,13 @@ module.exports = {
     background: {
         scripts: ["/background.js"]
     },
-    browser_action: {},
-    web_accessible_resources: ["/carousel.html",],
+    applications: undefined,
+    browser_action: {
+        browser_style: undefined,
+        default_icon: undefined,
+    },
+    icons: undefined,
+    web_accessible_resources: ["/carousel.html"],
     options_ui: {
         page: "/options.html",
     },

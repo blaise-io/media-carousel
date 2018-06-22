@@ -1,10 +1,8 @@
 {
     "compilerOptions": {
+        "module": "commonjs",
         "baseUrl": ".",
         "paths": {
-            "generate-json-webpack-plugin": [
-                "node_modules/generate-json-webpack-plugin/index.js"
-            ],
             "zip-webpack-plugin": [
                 "node_modules/zip-webpack-plugin/index.js"
             ],
