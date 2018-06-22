@@ -24,8 +24,11 @@ const config: webpack.Configuration = {
     module: {
         rules: [
             {
+                test: resolve(__dirname, "manifest/manifest.ts"),
+                use: ExtractTextPlugin.extract({ use: [] })
+            },
+            {
                 test: /\.ts$/,
-                exclude: /manifest\.ts$/,
                 use: "ts-loader",
             },
             {
@@ -39,25 +42,16 @@ const config: webpack.Configuration = {
                 ]
             },
             {
-                test: /manifest\.ts$/,
-                use: ExtractTextPlugin.extract({
-                    use: ["ts-loader"]
-                })
-            },
-            {
                 test: /\.(png|svg)$/,
-                use: [
-                    {
-                        loader: "file-loader",
-                        options: {
-                            context: resolve(__dirname, "app"),
-                            name: "[path][name].[ext]",
-                            outputPath: "",
-                            publicPath: "/",
-                        }
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        context: resolve(__dirname, "app"),
+                        name: "[path][name].[ext]",
+                        publicPath: "/",
                     }
-                ]
-            }
+                }]
+            },
         ]
     },
     output: {
