@@ -1,11 +1,10 @@
 import * as CleanWebpackPlugin from "clean-webpack-plugin";
-import * as GenerateJsonPlugin from "generate-json-webpack-plugin";
+import * as ExtractTextPlugin from "extract-text-webpack-plugin";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import * as MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { resolve } from "path";
 import * as webpack from "webpack";
 import * as ZipPlugin from "zip-webpack-plugin";
-import { manifest } from "./app/manifest";
 
 function polyfill(asset) {
     return (process.env.BROWSER === "chrome") ?
@@ -15,6 +14,7 @@ function polyfill(asset) {
 
 const config: webpack.Configuration = {
     entry: {
+        manifest: resolve(__dirname, "app/manifest/index.js"),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
         background: polyfill(resolve(__dirname, "app/background.ts")),
         inject: polyfill(resolve(__dirname, "app/inject.ts")),
@@ -35,6 +35,12 @@ const config: webpack.Configuration = {
                         options: { minimize: true }
                     }
                 ]
+            },
+            {
+                test: /index\.js$/,
+                use: ExtractTextPlugin.extract({
+                    use: []
+                })
             },
             {
                 test: /\.(png|svg)$/,
@@ -60,10 +66,14 @@ const config: webpack.Configuration = {
         new CleanWebpackPlugin([
             resolve(`dist/${process.env.BROWSER}`),
         ], { verbose: false }),
-        new webpack.DefinePlugin({
-            "process.env.BROWSER": JSON.stringify(process.env.BROWSER),
-        }),
-        new GenerateJsonPlugin("manifest.json", manifest, null, 2),
+        new webpack.EnvironmentPlugin([
+            "BROWSER",
+            "npm_package_name",
+            "npm_package_version",
+            "npm_package_description",
+            "npm_package_homepage",
+        ]),
+        new ExtractTextPlugin("manifest.json"),
         new MiniCssExtractPlugin({
             chunkFilename: "[id].css",
             filename: "[name].css",
@@ -79,8 +89,12 @@ const config: webpack.Configuration = {
             template: resolve(__dirname, "app/options/options.ejs"),
         }),
         new ZipPlugin({
-            filename: `media-carousel-${process.env.BROWSER}-${process.env.npm_package_version}.zip`,
-        })
+            filename: [
+                process.env.npm_package_name,
+                process.env.npm_package_version,
+                process.env.BROWSER,
+            ].join("-") + ".zip"
+        }),
     ],
     resolve: {
         extensions: [".ts", ".svg", ".png"]

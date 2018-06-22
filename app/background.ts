@@ -1,11 +1,5 @@
 import closeImage from "./icons/close.svg";
-import iconImageChrome from "./icons/icon.png";
 import iconImage from "./icons/icon.svg";
-
-if (process.env.BROWSER === "chrome") {
-    // tslint:disable-next-line:no-unused-expression
-    iconImageChrome;
-}
 
 const tabsWithCarousel: Record<number, boolean> = {};
 
