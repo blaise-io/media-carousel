@@ -1,5 +1,7 @@
-// Use CommonJS modules for compatibility with ExtractTextPlugin.
-module.exports = {
+// Use CommonJS in this file for compatibility with ExtractTextPlugin.
+// tslint:disable:no-var-requires
+
+const manifest = {
     manifest_version: 2,
     name: "Media Carousel",
     version: process.env.npm_package_version,
@@ -30,3 +32,19 @@ module.exports = {
         }
     }
 };
+
+if (process.env.BROWSER === "firefox") {
+    manifest.applications = {
+        gecko: {
+            id: `${process.env.npm_package_name}@blaise.io`
+        }
+    };
+    manifest.icons = {128: require("./icons/icon.svg")};
+    manifest.browser_action.browser_style = true;
+    manifest.browser_action.default_icon = require("./icons/icon.svg");
+} else {
+    manifest.icons = {128: require("./icons/icon.png")};
+    manifest.browser_action.default_icon = require("./icons/icon.png");
+}
+
+module.exports = JSON.stringify(manifest, null, 2);

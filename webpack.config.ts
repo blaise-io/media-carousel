@@ -15,7 +15,7 @@ function polyfill(asset) {
 const config: webpack.Configuration = {
     devtool: false,
     entry: {
-        manifest: resolve(__dirname, "app/manifest/manifest.ts"),
+        manifest: resolve(__dirname, "app/manifest.ts"),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
         background: polyfill(resolve(__dirname, "app/background.ts")),
         inject: polyfill(resolve(__dirname, "app/inject.ts")),
@@ -24,7 +24,7 @@ const config: webpack.Configuration = {
     module: {
         rules: [
             {
-                test: resolve(__dirname, "manifest/manifest.ts"),
+                test: /\/manifest\.ts$/,
                 use: ExtractTextPlugin.extract({ use: [] })
             },
             {
@@ -85,6 +85,7 @@ const config: webpack.Configuration = {
             template: resolve(__dirname, "app/options/options.ejs"),
         }),
         new ZipPlugin({
+            exclude: /manifest\.js$/,
             filename: [
                 process.env.npm_package_name,
                 process.env.npm_package_version,
