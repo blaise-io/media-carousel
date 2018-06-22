@@ -13,13 +13,19 @@ function polyfill(asset) {
 }
 
 const config: webpack.Configuration = {
-    devtool: false,
     entry: {
         manifest: resolve(__dirname, "app/manifest.ts"),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
         background: polyfill(resolve(__dirname, "app/background.ts")),
         inject: polyfill(resolve(__dirname, "app/inject.ts")),
         options: polyfill(resolve(__dirname, "app/options/options.ts")),
+    },
+    output: {
+        filename: "[name].js",
+        path: resolve(`dist/${process.env.BROWSER}`),
+    },
+    resolve: {
+        extensions: [".ts"]
     },
     module: {
         rules: [
@@ -54,10 +60,6 @@ const config: webpack.Configuration = {
             },
         ]
     },
-    output: {
-        filename: "[name].js",
-        path: resolve(`dist/${process.env.BROWSER}`),
-    },
     plugins: [
         new CleanWebpackPlugin([
             resolve(`dist/${process.env.BROWSER}`),
@@ -70,10 +72,7 @@ const config: webpack.Configuration = {
             "npm_package_homepage",
         ]),
         new ExtractTextPlugin("manifest.json"),
-        new MiniCssExtractPlugin({
-            chunkFilename: "[id].css",
-            filename: "[name].css",
-        }),
+        new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
             chunks: ["carousel"],
             filename: "carousel.html",
@@ -93,9 +92,6 @@ const config: webpack.Configuration = {
             ].join("-") + ".zip"
         }),
     ],
-    resolve: {
-        extensions: [".ts", ".svg", ".png"]
-    },
 };
 
 export default config;
