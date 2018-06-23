@@ -6,19 +6,13 @@ import { resolve } from "path";
 import * as webpack from "webpack";
 import * as ZipPlugin from "zip-webpack-plugin";
 
-function polyfill(asset) {
-    return (process.env.BROWSER === "chrome") ?
-        ["webextension-polyfill/dist/browser-polyfill.js", asset] :
-        [asset];
-}
-
 const config: webpack.Configuration = {
     entry: {
-        manifest: resolve(__dirname, "app/manifest.ts"),
+        background: resolve(__dirname, "app/background.ts"),
         carousel: resolve(__dirname, "app/carousel/initialize.ts"),
-        background: polyfill(resolve(__dirname, "app/background.ts")),
-        inject: polyfill(resolve(__dirname, "app/inject.ts")),
-        options: polyfill(resolve(__dirname, "app/options/options.ts")),
+        inject: resolve(__dirname, "app/inject.ts"),
+        manifest: resolve(__dirname, "app/manifest.ts"),
+        options: resolve(__dirname, "app/options/options.ts"),
     },
     output: {
         filename: "[name].js",

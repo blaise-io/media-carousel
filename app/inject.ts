@@ -1,5 +1,9 @@
 import defaultOptions from "./options/defaults";
 
+if (process.env.BROWSER === "chrome") {
+    window.browser = require("webextension-polyfill");  // tslint:disable-line
+}
+
 (() => {
 
     const savedOptionsPromise = browser.storage.sync.get("options");
@@ -40,7 +44,7 @@ import defaultOptions from "./options/defaults";
         }), "*");
     });
 
-    function addMessageListener(frame) {
+    function addMessageListener(loadedFrame) {
         window.addEventListener("message", (event) => {
             let data;
             try {
@@ -54,8 +58,8 @@ import defaultOptions from "./options/defaults";
             }
 
             if (data.close) {
-                toggleHostStyle(frame, false);
-                document.documentElement.removeChild(frame);
+                toggleHostStyle(loadedFrame, false);
+                document.documentElement.removeChild(loadedFrame);
                 // Notify background.js, which handles the toolbar button.
                 browser.runtime.sendMessage({action: "close"});
             }

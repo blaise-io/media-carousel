@@ -1,5 +1,9 @@
 import defaultOptions from "./defaults";
 
+if (process.env.BROWSER === "chrome") {
+    window.browser = require("webextension-polyfill");  // tslint:disable-line
+}
+
 document.addEventListener("change", saveOptions, false);
 
 let options = {};

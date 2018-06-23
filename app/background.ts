@@ -1,6 +1,10 @@
 import closeImage from "./icons/close.svg";
 import iconImage from "./icons/icon.svg";
 
+if (process.env.BROWSER === "chrome") {
+    window.browser = require("webextension-polyfill");  // tslint:disable-line
+}
+
 const tabsWithCarousel: Record<number, boolean> = {};
 
 // Set state and icon.
