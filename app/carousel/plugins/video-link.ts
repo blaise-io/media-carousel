@@ -1,4 +1,5 @@
 import Base from "./base";
+import LinkTitle from "./title/link-title";
 
 export default class VideoLink extends Base {
     get url() {
@@ -32,6 +33,6 @@ export default class VideoLink extends Base {
     }
 
     get title() {
-        return this.element.title || this.element.textContent;
+        return new LinkTitle(this.element).title;
     }
 }

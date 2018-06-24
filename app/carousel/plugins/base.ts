@@ -1,8 +1,6 @@
-import BaseTitle from "./title/base";
 import EmbedTitle from "./title/embed-title";
-import LinkTitle from "./title/link-title";
 
-export default class Base implements BaseTitle {
+export default class Base {
     constructor(
         public element: HTMLLinkElement & HTMLIFrameElement & HTMLImageElement,
         public options
