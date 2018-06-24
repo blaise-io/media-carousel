@@ -1,6 +1,6 @@
 import defaultOptions from "./options/defaults";
 
-if (process.env.BROWSER === "chrome") {
+if (process.env.BROWSER !== "firefox") {
     window.browser = require("webextension-polyfill");  // tslint:disable-line
 }
 

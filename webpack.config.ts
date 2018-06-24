@@ -19,7 +19,7 @@ const config: webpack.Configuration = {
         path: resolve(`dist/${process.env.BROWSER}`),
     },
     resolve: {
-        extensions: [".ts"]
+        extensions: [".ts", ".png"]
     },
     module: {
         rules: [
@@ -48,6 +48,7 @@ const config: webpack.Configuration = {
                     options: {
                         context: resolve(__dirname, "app"),
                         name: "[path][name].[ext]",
+                        outputPath: "",
                         publicPath: "/",
                     }
                 }]

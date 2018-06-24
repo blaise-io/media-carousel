@@ -1,5 +1,4 @@
-// Use CommonJS in this file for compatibility with ExtractTextPlugin.
-// tslint:disable:no-var-requires
+import * as iconImage from "./icons/icon.png";
 
 const manifest = {
     manifest_version: 2,
@@ -12,14 +11,17 @@ const manifest = {
         scripts: ["/background.js"]
     },
     applications: undefined,
-    browser_action: {
-        browser_style: undefined,
-        default_icon: undefined,
+    icons: {
+        128: iconImage,
     },
-    icons: undefined,
+    browser_action: {
+        default_icon: iconImage,
+        browser_style: undefined,
+    },
     web_accessible_resources: ["/carousel.html"],
     options_ui: {
         page: "/options.html",
+        browser_style: undefined,
     },
     commands: {
         _execute_browser_action: {
@@ -39,12 +41,8 @@ if (process.env.BROWSER === "firefox") {
             id: `${process.env.npm_package_name}@blaise.io`
         }
     };
-    manifest.icons = {128: require("./icons/icon.svg")};
+    manifest.options_ui.browser_style = false;
     manifest.browser_action.browser_style = true;
-    manifest.browser_action.default_icon = require("./icons/icon.svg");
-} else {
-    manifest.icons = {128: require("./icons/icon.png")};
-    manifest.browser_action.default_icon = require("./icons/icon.png");
 }
 
 module.exports = JSON.stringify(manifest, null, 2);

@@ -1,7 +1,7 @@
-import closeImage from "./icons/close.svg";
-import iconImage from "./icons/icon.svg";
+import * as closeImage from "./icons/close.png";
+import * as iconImage from "./icons/icon.png";
 
-if (process.env.BROWSER === "chrome") {
+if (process.env.BROWSER !== "firefox") {
     window.browser = require("webextension-polyfill");  // tslint:disable-line
 }
 
