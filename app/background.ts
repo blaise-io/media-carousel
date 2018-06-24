@@ -1,20 +1,27 @@
-const tabsWithCarousel = {};
+import * as closeImage from "./icons/close.png";
+import * as iconImage from "./icons/icon.png";
+
+if (process.env.BROWSER !== "firefox") {
+    window.browser = require("webextension-polyfill");  // tslint:disable-line
+}
+
+const tabsWithCarousel: Record<number, boolean> = {};
 
 // Set state and icon.
-function updateState(tabId, hasCarousel) {
+function updateState(tabId: number, hasCarousel: boolean) {
     tabsWithCarousel[tabId] = hasCarousel;
     updateIcon(tabId);
 }
 
 // Set icon and title.
-function updateIcon(tabId) {
-    const icon = tabsWithCarousel[tabId] ? 'close' : 'icon';
-    const modifierKey = navigator.platform.match(/^mac/i) ? 'Cmd' : 'Ctrl';
+function updateIcon(tabId: number) {
+    const path = tabsWithCarousel[tabId] ? closeImage : iconImage;
+    const modifierKey = navigator.platform.match(/^mac/i) ? "Cmd" : "Ctrl";
     const title = tabsWithCarousel[tabId] ?
-        'Close carousel (Esc)' :
+        "Close carousel (Esc)" :
         `Display media on this page in a carousel (${modifierKey}+Shift+M)`;
-    browser.browserAction.setIcon({tabId: tabId, path: `icons/${icon}.svg`});
-    browser.browserAction.setTitle({tabId: tabId, title: title});
+    browser.browserAction.setIcon({tabId, path});
+    browser.browserAction.setTitle({tabId, title});
 }
 
 // Set initial state.
@@ -34,15 +41,15 @@ browser.browserAction.onClicked.addListener((tab) => {
     browser.tabs.executeScript(tab.id,
         tabsWithCarousel[tab.id] ?
             {code: 'window.postMessage(`{"mcext": {"close": true}}`, "*")'} :
-            {file: '/inject-overlay.js'}
+            {file: "/inject.js"},
     );
 
     // Handle carousel reporting open/closed.
     browser.runtime.onMessage.addListener((message, sender) => {
         if (sender.tab.id === tab.id) {
-            if (message.action === 'open') {
+            if (message.action === "open") {
                 updateState(tab.id, true);
-            } else if (message.action === 'close') {
+            } else if (message.action === "close") {
                 updateState(tab.id, false);
             }
         }
