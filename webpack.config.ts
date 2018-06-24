@@ -19,7 +19,7 @@ const config: webpack.Configuration = {
         path: resolve(`dist/${process.env.BROWSER}`),
     },
     resolve: {
-        extensions: [".ts", ".png"]
+        extensions: [".ts"]
     },
     module: {
         rules: [
@@ -78,14 +78,16 @@ const config: webpack.Configuration = {
             filename: "options.html",
             template: resolve(__dirname, "app/options/options.ejs"),
         }),
-        new ZipPlugin({
-            exclude: /manifest\.js$/,
-            filename: [
-                process.env.npm_package_name,
-                process.env.npm_package_version,
-                process.env.BROWSER,
-            ].join("-") + ".zip"
-        }),
+        ...(process.argv.includes("--run-prod") ? [
+            new ZipPlugin({
+                exclude: /manifest\.js$/,
+                filename: [
+                    process.env.npm_package_name,
+                    process.env.npm_package_version,
+                    process.env.BROWSER,
+                ].join("-") + ".zip"
+            })
+        ] : [])
     ],
 };
 

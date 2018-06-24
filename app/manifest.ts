@@ -42,7 +42,7 @@ if (process.env.BROWSER === "firefox") {
         }
     };
     manifest.options_ui.browser_style = false;
-    manifest.browser_action.browser_style = true;
+    manifest.browser_action.browser_style = false;
 }
 
 module.exports = JSON.stringify(manifest, null, 2);
