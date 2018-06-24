@@ -19,7 +19,6 @@ import YouTubeLink from "./plugins/youtube-link";
  * Handle hosts preventing hotlinking
  */
 
- // TODO: Order
 export const enabledPlugins = [
     ImageEmbed,
     ImageLink,
