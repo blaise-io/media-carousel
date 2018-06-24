@@ -21,12 +21,12 @@ import YouTubeLink from "./plugins/youtube-link";
 
  // TODO: Order
 export const enabledPlugins = [
-    GfyCat,
     ImageEmbed,
     ImageLink,
-    ImgurAlbum,
     ImgurGifv,
-    StreamableLink,
-    VimeoLink,
+    GfyCat,
+    ImgurAlbum,
     YouTubeLink,
+    VimeoLink,
+    StreamableLink,
 ];
