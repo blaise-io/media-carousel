@@ -54,8 +54,8 @@ export default class Carousel {
         document.addEventListener("keydown", (event) => {
             switch (event.which) {
                 case 27: this.closeFn(); break; // Esc
-                case 37: prev();  break; // ◄
-                case 39: next();  break; // ►
+                case 37: prev(); break; // ◄
+                case 39: next(); break; // ►
             }
         });
     }

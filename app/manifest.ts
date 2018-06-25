@@ -41,7 +41,7 @@ if (process.env.BROWSER === "firefox") {
             id: `${process.env.npm_package_name}@blaise.io`
         }
     };
-    manifest.options_ui.browser_style = false;
+    manifest.options_ui.browser_style = true;
     manifest.browser_action.browser_style = false;
 }
 
