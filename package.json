@@ -7,6 +7,7 @@
     "webpack": "webpack --devtool inline-source-map --require ts-node/register --config webpack.config.ts"
   },
   "scripts": {
+    "tag": "git tag $npm_package_version && git push origin $npm_package_version",
     "build": "npm run firefox.build; npm run chrome.build",
     "chrome.dev": "BROWSER=chrome $npm_package_config_webpack --watch --run-dev",
     "chrome.build": "BROWSER=chrome $npm_package_config_webpack --run-prod",
