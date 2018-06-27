@@ -125,17 +125,14 @@ img, video, iframe {
     padding-left: 0.3em;
 }
 
-#slides.animate figure {
-    transition: all 0.6s cubic-bezier(0.3, 1, 0.3, 1);
-}
-
 #slides figure > * {
     transition: box-shadow 200ms cubic-bezier(0.3, 1, 0.3, 1) 150ms;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6),
-                0 0 10vw rgba(255, 255, 255, 0.2)
+    0 0 10vw rgba(255, 255, 255, 0.2)
 }
 
 #slides figure {
+    transition: all 0.6s cubic-bezier(0.3, 1, 0.3, 1);
     transform-origin: center center;
     position: absolute;
     left: 0;

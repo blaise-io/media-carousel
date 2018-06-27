@@ -1,29 +1,20 @@
 import "./carousel.css";
 import Base from "./plugins/base";
 
-/**
- * TODO, maybe:
- * Replace no media alert with HTML
- * Design "No media" message
- * Zoom indicator and click to real-size / scroll
- * Preload multiple slides
- */
-
 export default class Carousel {
 
     public dom: Record<string, HTMLDivElement>;
     public slides: Base[];
     public closeFn: FunctionConstructor;
-    public animating: boolean;
+    public animating: boolean = false;
     public max: number;
-    public current: number;
+    public current: number = 0;
+    public queue: number[] = [];
+    public animDurationMs: number = 600;
 
     constructor(slides, closeFn) {
         this.slides = slides;
         this.closeFn = closeFn;
-
-        this.animating = false;
-        this.current = 0;
         this.max = slides.length;
 
         this.registerDomElements();
@@ -71,6 +62,7 @@ export default class Carousel {
         const direction = delta === 1 ? "left" : "right";
 
         if (this.animating) {
+            this.queue.push(delta);
             return;
         } else if (newCurrent === -1) {
             this.flashNav(this.dom.prev);
@@ -80,35 +72,40 @@ export default class Carousel {
             return;
         }
 
-        this.dom.slides.classList.add("animate", direction);
+        this.dom.slides.classList.add(direction);
         this.animating = true;
 
+        // Update title and nav halfway.
         window.setTimeout(() => {
-            // Set essentials
             this.current = newCurrent;
-            this.animating = false;
             this.setTitle();
             this.updateNav();
+        }, this.animDurationMs / 3);
 
-            // Animating can come later when user wants to scroll hard.
-            window.setTimeout(() => {
-                this.dom.slides.classList.remove("animate");
-                this.dom.slides.classList.remove(direction);
+        window.setTimeout(() => {
+            if (delta === 1) {
+                // Navigated to next slide:
+                // Add new next slide and remove the former previous slide.
+                this.appendSlideWithIndex(newCurrent + 1);
+                this.removeSlideAtPosition(0);
+            } else if (delta === -1) {
+                // Navigated to previous slide:
+                // Add new previous slide and remove the former next slide.
+                this.removeSlideAtPosition(2);
+                this.prependSlideWithIndex(newCurrent - 1);
+            }
 
-                if (delta === 1) {
-                    // Navigated to next slide:
-                    // Add new next slide and remove the former previous slide.
-                    this.appendSlideWithIndex(newCurrent + 1);
-                    this.removeSlideAtPosition(0);
-                } else if (delta === -1) {
-                    // Navigated to previous slide:
-                    // Add new previous slide and remove the former next slide.
-                    this.removeSlideAtPosition(2);
-                    this.prependSlideWithIndex(newCurrent - 1);
-                }
-            }, 400);
+            this.dom.slides.classList.remove(direction);
+            this.animating = false;
 
-        }, 200);
+            // Next in queue, must be async or animation is skipped.
+            if (this.queue.length) {
+                window.setTimeout(() => {
+                    this.navigate(this.queue.shift());
+                }, 20);
+            }
+        }, this.animDurationMs * 0.7);
+        // Can skip a bit of the animation when in a hurry.
     }
 
     public flashNav(element) {
@@ -143,7 +140,7 @@ export default class Carousel {
     public setTitle() {
         this.dom.current.textContent = String(this.current + 1);
         this.dom.max.textContent = String(this.max);
-        this.dom.title.innerHTML = this.slides[this.current].title;
+        this.dom.title.innerHTML = this.slides[this.current].title || "&#160;";
     }
 
     public updateNav() {
