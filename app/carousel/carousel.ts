@@ -4,19 +4,18 @@ import Base from "./plugins/base";
 export default class Carousel {
 
     public dom: Record<string, HTMLDivElement>;
-    public slides: Base[];
-    public closeFn: FunctionConstructor;
     public animating: boolean = false;
     public max: number;
     public current: number = 0;
     public queue: number[] = [];
     public animDurationMs: number = 600;
 
-    constructor(slides, closeFn) {
-        this.slides = slides;
-        this.closeFn = closeFn;
+    constructor(
+        public slides: Base[],
+        public options: Record<string, boolean>,
+        public closeFn: () => void,
+    ) {
         this.max = slides.length;
-
         this.registerDomElements();
         this.addEventHandlers();
         this.setInitialSlides();
@@ -38,9 +37,14 @@ export default class Carousel {
     public addEventHandlers() {
         const prev = this.navigate.bind(this, -1);
         const next = this.navigate.bind(this, 1);
+        const toggleZoom = this.toggleZoom.bind(this);
 
         this.dom.prev.addEventListener("click", prev);
         this.dom.next.addEventListener("click", next);
+
+        if (this.options["ui.dblclick.zoom"]) {
+            this.dom.slides.addEventListener("dblclick", toggleZoom);
+        }
 
         document.addEventListener("keydown", (event) => {
             switch (event.which) {
@@ -148,6 +152,23 @@ export default class Carousel {
         const atLast = this.current + 1 === this.max;
         this.dom.prev.classList.toggle("disabled", atFirst);
         this.dom.next.classList.toggle("disabled", atLast);
+    }
+
+    public toggleZoom() {
+        const slide = this.slides[this.current];
+        const node = this.dom.slides.childNodes[1] as HTMLElement;
+        const classList = node.classList;
+
+        if (!node || slide.zoom === 1) {
+            // pass
+        } else if (!classList.contains("zoom2x") && !classList.contains("zoom4x")) {
+            node.classList.add("zoom2x");
+        } else if (slide.zoom < 0.5 && !classList.contains("zoom4x")) {
+            node.classList.remove("zoom2x");
+            node.classList.add("zoom4x");
+        } else {
+            node.classList.remove("zoom2x", "zoom4x");
+        }
     }
 
 }

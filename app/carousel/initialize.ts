@@ -20,7 +20,7 @@ import SlideCollection from "./collection";
         const slides = collection.slides;
 
         if (slides.length) {
-            const carousel = new Carousel(slides, close);
+            const carousel = new Carousel(slides, data.options, close);
         } else {
             window.alert("No supported media found on this page.");
             close();

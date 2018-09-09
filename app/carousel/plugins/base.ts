@@ -21,4 +21,8 @@ export default class Base {
     get title() {
         return new EmbedTitle(this.element).title;
     }
+
+    get zoom() {
+        return 1;
+    }
 }

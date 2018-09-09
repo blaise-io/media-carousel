@@ -17,4 +17,13 @@ export default class ImageBase extends Base {
     get imgExtRegexp() {
         return /\.(bmp|jpeg|jpg|gif|png|svg)$/i;
     }
+
+    get zoom() {
+        const img = this.img;
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        return (w > vw || h > vh) ? Math.min(vw / w, vh / h) : 1;
+    }
 }
