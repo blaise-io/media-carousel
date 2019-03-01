@@ -157,6 +157,11 @@ figure.zoom4x {
     height: 100vh;
 }
 
+#slides:not(.right) figure:nth-child(1),
+#slides:not(.left) figure:nth-child(3) {
+    transition: none;
+}
+
 /**
  * Positioning
  */
