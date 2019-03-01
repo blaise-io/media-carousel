@@ -13,7 +13,7 @@ export default class Carousel {
     constructor(
         public slides: Base[],
         public options: Record<string, boolean>,
-        public closeFn: () => void,
+        public closeFn: () => void
     ) {
         this.max = slides.length;
         this.registerDomElements();
@@ -61,7 +61,7 @@ export default class Carousel {
         this.appendSlideWithIndex(this.current + 1);
     }
 
-    public navigate(delta) {
+    public navigate(delta: number) {
         const newCurrent = this.current + delta;
         const direction = delta === 1 ? "left" : "right";
 
@@ -112,7 +112,7 @@ export default class Carousel {
         // Can skip a bit of the animation when in a hurry.
     }
 
-    public flashNav(element) {
+    public flashNav(element: HTMLElement) {
         element.classList.add("flash");
         window.setTimeout(() => element.classList.remove("flash"), 400);
     }
@@ -121,22 +121,22 @@ export default class Carousel {
         return document.createElement("figure");
     }
 
-    public getSlide(index) {
+    public getSlide(index: number) {
         return this.slides[index] ? this.slides[index].node : this.dummySlide;
     }
 
-    public removeSlideAtPosition(position) {
-        const removeSlide = this.dom.slides.childNodes[position];
+    public removeSlideAtPosition(position: number) {
+        const removeSlide = this.dom.slides.childNodes[position] as HTMLElement;
         this.dom.slides.removeChild(removeSlide);
     }
 
-    public prependSlideWithIndex(insertSlideIndex) {
+    public prependSlideWithIndex(insertSlideIndex: number) {
         const insertSlide = this.getSlide(insertSlideIndex);
         const firstSlide = this.dom.slides.childNodes[0];
         this.dom.slides.insertBefore(insertSlide, firstSlide);
     }
 
-    public appendSlideWithIndex(insertSlideIndex) {
+    public appendSlideWithIndex(insertSlideIndex: number) {
         const insertSlide = this.getSlide(insertSlideIndex);
         this.dom.slides.appendChild(insertSlide);
     }

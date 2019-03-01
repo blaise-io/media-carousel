@@ -8,7 +8,7 @@ const manifest = {
     homepage_url: process.env.npm_package_homepage,
     permissions: ["activeTab", "storage"],
     background: {
-        scripts: ["/background.js"]
+        scripts: ["/background.js"],
     },
     applications: undefined,
     icons: {
@@ -30,16 +30,16 @@ const manifest = {
                 windows: "Ctrl+Shift+M",
                 linux: "Ctrl+Shift+M",
                 mac: "Command+Shift+M",
-            }
-        }
-    }
+            },
+        },
+    },
 };
 
 if (process.env.BROWSER === "firefox") {
     manifest.applications = {
         gecko: {
-            id: `${process.env.npm_package_name}@blaise.io`
-        }
+            id: `${process.env.npm_package_name}@blaise.io`,
+        },
     };
     manifest.options_ui.browser_style = true;
     manifest.browser_action.browser_style = false;

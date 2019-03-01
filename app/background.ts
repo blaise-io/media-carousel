@@ -41,7 +41,7 @@ browser.browserAction.onClicked.addListener((tab) => {
     browser.tabs.executeScript(tab.id,
         tabsWithCarousel[tab.id] ?
             {code: 'window.postMessage(`{"mcext": {"close": true}}`, "*")'} :
-            {file: "/inject.js"},
+            {file: "/inject.js"}
     );
 
     // Handle carousel reporting open/closed.
