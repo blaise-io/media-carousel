@@ -15,9 +15,13 @@ export default class GfyCat extends VideoLink {
         fetch(`https://api.gfycat.com/v1/gfycats/${this.gfyId}`).then((r) => {
             r.json().then((json) => {
                 video.poster = json.gfyItem.posterUrl;
-                [json.gfyItem.webmUrl, json.gfyItem.mp4Url].forEach((src) => {
+                [
+                    [json.gfyItem.webmUrl, "video/webm"],
+                    [json.gfyItem.mp4Url, "video/mp4"],
+                ].forEach(([src, type]) => {
                     const source = this.source;
                     source.src = src;
+                    source.type = type;
                     video.appendChild(source);
                 });
                 figure.appendChild(video);
