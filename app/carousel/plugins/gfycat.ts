@@ -4,22 +4,25 @@ export default class GfyCat extends VideoLink {
     get canHandle() {
         return (
             super.canHandle &&
-            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[A-Z][\w]+/))
+            Boolean(this.url.match(/^https?:\/\/gfycat\.com\/[\w]+/))
         );
     }
 
     get node() {
         const figure = this.figure;
         const video = this.video;
-        video.poster = `https://thumbs.gfycat.com/${this.gfyId}-poster.jpg`;
 
-        ["zippy", "fat", "giant"].forEach((bucket) => {
-            const source = this.source;
-            source.src = `https://${bucket}.gfycat.com/${this.gfyId}.mp4`;
-            video.appendChild(source);
+        fetch(`https://api.gfycat.com/v1/gfycats/${this.gfyId}`).then((r) => {
+            r.json().then((json) => {
+                video.poster = json.gfyItem.posterUrl;
+                [json.gfyItem.webmUrl, json.gfyItem.mp4Url].forEach((src) => {
+                    const source = this.source;
+                    source.src = src;
+                    video.appendChild(source);
+                });
+                figure.appendChild(video);
+            });
         });
-
-        figure.appendChild(video);
 
         return figure;
     }
