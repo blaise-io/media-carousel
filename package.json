@@ -45,7 +45,7 @@
     "tslint": "5.10.0",
     "typescript": "2.9.1",
     "webextension-polyfill": "0.2.1",
-    "webpack": "4.12.0",
+    "webpack": "5.94.0",
     "webpack-command": "0.2.1",
     "zip-webpack-plugin": "3.0.0"
   }
